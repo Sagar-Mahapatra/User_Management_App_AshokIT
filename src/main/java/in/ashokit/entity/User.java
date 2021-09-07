@@ -29,8 +29,8 @@ public class User {
 	private String lastName;
 
 	private String email;
-	@Column(name = "ph_no")
 
+	@Column(name = "ph_no")
 	private String phNo;
 
 	private String dob;
@@ -48,5 +48,8 @@ public class User {
 	private LocalDate updatedDate;
 
 	private String password;
+
+	@Column(name = "acc_status")
+	private String accountStatus;
 
 }
