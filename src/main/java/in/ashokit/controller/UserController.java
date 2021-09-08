@@ -21,9 +21,9 @@ public class UserController {
 	public String UserRegistration(@RequestBody User user) {
 		boolean registerUser = service.registerUser(user);
 		if (registerUser) {
-			return "saved user successfully...";
+			return "Please check your email to unlock account";
 		}
-		return "couldn't save user !!!";
+		return "something went wrong please try again !!!";
 	}
 
 	@PostMapping("/unlockAccount")
@@ -42,6 +42,13 @@ public class UserController {
 		String msg = service.loginUser(email, psw);
 
 		return msg;
+
+	}
+
+	@PostMapping("/forgotPassword")
+	public String forgotPassword(@RequestParam String email) {
+
+		return service.forgotPsw(email);
 
 	}
 

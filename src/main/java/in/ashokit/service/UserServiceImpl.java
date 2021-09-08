@@ -80,4 +80,19 @@ public class UserServiceImpl implements UserService {
 
 	}
 
+	@Override
+	public String forgotPsw(String email) {
+		User user = userRepo.getUserByEmail(email);
+		if (user == null) {
+			return "We can't find a user with that e-mail address";
+		}
+
+		String password = user.getPassword();
+
+//		logic to send password to mail id
+
+		return "we have sent your password on registered e-mail address";
+
+	}
+
 }

@@ -11,7 +11,7 @@ public class UserManagementAppApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext context = SpringApplication.run(UserManagementAppApplication.class, args);
-		//UserController userController = context.getBean(UserController.class);
+//		UserController userController = context.getBean(UserController.class);
 //		User user = new User();
 //		user.setFirstName("sagar");
 //		user.setLastName("mahapatra");
@@ -23,6 +23,8 @@ public class UserManagementAppApplication {
 //		System.out.println(msg);
 //		String userLogin = userController.userLogin("sagar@gmail.com", "newpsaword");
 //		System.out.println(userLogin);
+//		String msg2 = userController.forgotPassword("sagar@gmail.com");
+//		System.out.println(msg2);
 	}
 
 }

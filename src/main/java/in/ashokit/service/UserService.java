@@ -21,4 +21,6 @@ public interface UserService {
 
 	public String loginUser(String email, String psw);
 
+	public String forgotPsw(String email);
+
 }
