@@ -39,9 +39,7 @@ public class UserController {
 	@PostMapping("/userLogin")
 	public String userLogin(@RequestParam String email, @RequestParam String psw) {
 
-		String msg = service.loginUser(email, psw);
-
-		return msg;
+		return service.loginUser(email, psw);
 
 	}
 
