@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import in.ashokit.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Serializable> {
+	@Query("From User WHERE email=:em")
+	public User getUserByEmail(String em);
 
-	public User findUserByEmail(String email);
-
-	@Query("FROM User U WHERE U.email = :email and U.password = :psw")
+	@Query("FROM User WHERE email=:email and password=:psw")
 	public User getUserByEmailAndPsw(String email, String psw);
 
 }

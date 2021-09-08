@@ -55,13 +55,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean unlockAccount(String email, String tempPsw, String newPsw) {
-		User user = userRepo.findUserByEmail(email);
+
+		User user = userRepo.getUserByEmail(email);
 		if (user.getPassword().equalsIgnoreCase(tempPsw)) {
 			user.setPassword(newPsw);
 			user.setAccountStatus("Unlocked");
 			userRepo.save(user);
 			return true;
 		}
+
 		return false;
 	}
 
@@ -73,7 +75,7 @@ public class UserServiceImpl implements UserService {
 		} else if (user.getAccountStatus().equalsIgnoreCase("Locked")) {
 			return "Your Account is Locked";
 		} else {
-			return "Welcome To Ashok IT...";
+			return "Welcome To Ashok IT.....";
 		}
 
 	}
