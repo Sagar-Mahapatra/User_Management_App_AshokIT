@@ -54,10 +54,17 @@ public class UserController {
 		return "Please Enter the Correct Password provided in the registered mail id";
 	}
 
-	@PostMapping("/userLogin")
-	public String userLogin(@RequestParam String email, @RequestParam String psw) {
+	@GetMapping("/loadLoginForm")
+	public String loadLoginForm(Model model) {
 
-		return service.loginUser(email, psw);
+		return "userLogin";
+	}
+
+	@PostMapping("/userLogin")
+	public String userLogin(@RequestParam String email, @RequestParam String password, Model model) {
+		String msg = service.loginUser(email, password);
+		model.addAttribute("msg", msg);
+		return "userLogin";
 
 	}
 
