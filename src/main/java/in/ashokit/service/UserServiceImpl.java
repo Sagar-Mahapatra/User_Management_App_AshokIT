@@ -52,9 +52,14 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<State> getStates(Integer countryId) {
+	public Map<Integer,String> getStates(Integer countryId) {
+		Map<Integer,String> states=new HashMap<>();
+		List<State> statesByCountryId = stateRepo.getStatesByCountryId(countryId);
+		for(State s:statesByCountryId){
+			states.put(s.getStateId(), s.getStateName());
+		}
 
-		return stateRepo.findAll();
+		return states;
 	}
 
 	@Override
@@ -67,11 +72,14 @@ public class UserServiceImpl implements UserService {
 	public boolean unlockAccount(String email, String tempPsw, String newPsw) {
 
 		User user = userRepo.getUserByEmail(email);
-		if (user.getPassword().equalsIgnoreCase(tempPsw)) {
-			user.setPassword(newPsw);
-			user.setAccountStatus("Unlocked");
-			userRepo.save(user);
-			return true;
+
+		if (user != null) {
+			if (user.getPassword().equalsIgnoreCase(tempPsw)) {
+				user.setPassword(newPsw);
+				user.setAccountStatus("Unlocked");
+				userRepo.save(user);
+				return true;
+			}
 		}
 
 		return false;
@@ -101,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
 //		logic to send password to mail id
 
-		return "we have sent your password on registered e-mail address";
+		return "we have sent your password on registered email:- " + password;
 
 	}
 

@@ -23,11 +23,14 @@ public class UserController {
 
 	@GetMapping("/loadRegForm")
 	public String loadRegistrationForm(Model model) {
+
 		User user = new User();
 		Map<Integer, String> countries = service.getCountries();
-
+		Map<Integer, String> states = service.getStates(1);
+		model.addAttribute("states", states);
 		model.addAttribute("user", user);
 		model.addAttribute("countries", countries);
+
 		return "userReg";
 	}
 
@@ -44,18 +47,30 @@ public class UserController {
 		return "userReg";
 	}
 
+	@GetMapping("/loadUnlockAccountForm")
+	public String loadUnlockAccountForm() {
+
+		return "unlockAccount";
+	}
+
 	@PostMapping("/unlockAccount")
-	public String unlockAccount(@RequestParam String email, @RequestParam String tempPsw, @RequestParam String newPsw) {
+	public String unlockAccount(@RequestParam String email, @RequestParam String tempPsw, @RequestParam String newPsw,
+			Model model) {
 
 		boolean unlockAccount = service.unlockAccount(email, tempPsw, newPsw);
 		if (unlockAccount) {
-			return "Account Unlocked, please proceed with login";
+			model.addAttribute("msg", "Account Unlocked, please proceed with login");
+
+		} else {
+			model.addAttribute("msg",
+					"Please Enter the Registered email id & Password provided in the registered mail id");
 		}
-		return "Please Enter the Correct Password provided in the registered mail id";
+
+		return "unlockAccount";
 	}
 
 	@GetMapping("/loadLoginForm")
-	public String loadLoginForm(Model model) {
+	public String loadLoginForm() {
 
 		return "userLogin";
 	}
@@ -68,10 +83,19 @@ public class UserController {
 
 	}
 
-	@PostMapping("/forgotPassword")
-	public String forgotPassword(@RequestParam String email) {
+	@GetMapping("/loadForgotPasswordForm")
+	public String loadForgotPasswordForm() {
 
-		return service.forgotPsw(email);
+		return "forgotPsw";
+	}
+
+	@PostMapping("/forgotPassword")
+	public String forgotPassword(@RequestParam String email, Model model) {
+		String msg = service.forgotPsw(email);
+
+		model.addAttribute("msg", msg);
+
+		return "forgotPsw";
 
 	}
 

@@ -86,7 +86,7 @@ label, b {
 						</div>
 						<div class="col-md-5">
 							<form:input path="phNo" name="phNo" id="phNo"
-								class="form-control" />
+								class="form-control" type="number" />
 						</div>
 						<div class="col-md-5">
 							<!-- This is to show error section -->
@@ -224,10 +224,18 @@ label, b {
 							function validate_firstName() {
 								//read input value
 								var val = $("#firstName").val();
+								var exp = /^[A-Za-z]{3,8}$/;
 								if (val == "") {
 									$("#firstNameError").show();
 									$("#firstNameError").html(
 											"*Please Enter <b>first name</b>");
+									$("#firstNameError").css("color", "red");
+									firstNameError = false;
+								} else if (!exp.test(val)) {
+									$("#firstNameError").show();
+									$("#firstNameError")
+											.html(
+													"*Must contain <b>between 3 to 8 chars</b>");
 									$("#firstNameError").css("color", "red");
 									firstNameError = false;
 								} else {
@@ -239,10 +247,18 @@ label, b {
 							function validate_lastName() {
 								//read input value
 								var val = $("#lastName").val();
+								var exp = /^[A-Za-z]{3,8}$/;
 								if (val == "") {
 									$("#lastNameError").show();
 									$("#lastNameError").html(
 											"*Please Enter <b>last name</b>");
+									$("#lastNameError").css("color", "red");
+									lastNameError = false;
+								} else if (!exp.test(val)) {
+									$("#lastNameError").show();
+									$("#lastNameError")
+											.html(
+													"*Must contain <b>between 3 to 8 chars</b>");
 									$("#lastNameError").css("color", "red");
 									lastNameError = false;
 								} else {
@@ -254,10 +270,18 @@ label, b {
 							function validate_email() {
 								//read input value
 								var val = $("#email").val();
+								var exp = /^[A-Za-z0-9\@\.]{10,30}$/;
 								if (val == "") {
 									$("#emailError").show();
 									$("#emailError").html(
 											"*Please Enter <b>email</b>");
+									$("#emailError").css("color", "red");
+									lastNameError = false;
+								} else if (!exp.test(val)) {
+									$("#emailError").show();
+									$("#emailError")
+											.html(
+													"*Must contain <b>between 10 to 30 chars</b>");
 									$("#emailError").css("color", "red");
 									lastNameError = false;
 								} else {
@@ -271,8 +295,9 @@ label, b {
 								var val = $("#phNo").val();
 								if (val == "") {
 									$("#phNoError").show();
-									$("#phNoError").html(
-											"*Please Enter <b>ph no</b>");
+									$("#phNoError")
+											.html(
+													"*Please Enter <b>phone number</b>");
 									$("#phNoError").css("color", "red");
 									phNoError = false;
 								} else {
@@ -297,22 +322,6 @@ label, b {
 								return dobError;
 							}
 
-							function validate_gender() {
-								var val1 = $("#gender1").prop('checked');
-								var val2 = $("#gender2").prop('checked');
-								if (val1 && val2) {
-									$("#genderError").show();
-									$("#genderError").html(
-											"*Please select <b>gender</b>");
-									$("#genderError").css("color", "red");
-									genderError = false;
-								} else {
-									$("#genderError").hide();
-									genderError = true;
-								}
-
-								return genderError;
-							}
 							//linking function with action event
 							$("#firstName").keyup(function() {
 								validate_firstName();

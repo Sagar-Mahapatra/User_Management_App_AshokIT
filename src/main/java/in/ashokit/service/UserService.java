@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import in.ashokit.entity.City;
-import in.ashokit.entity.State;
 import in.ashokit.entity.User;
 
 public interface UserService {
@@ -13,7 +12,7 @@ public interface UserService {
 
 	public Map<Integer, String> getCountries();
 
-	public List<State> getStates(Integer countryId);
+	public Map<Integer, String> getStates(Integer countryId);
 
 	public List<City> getCities(Integer stateId);
 
