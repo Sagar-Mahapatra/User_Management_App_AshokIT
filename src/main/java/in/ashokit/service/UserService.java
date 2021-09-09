@@ -1,9 +1,9 @@
 package in.ashokit.service;
 
 import java.util.List;
+import java.util.Map;
 
 import in.ashokit.entity.City;
-import in.ashokit.entity.Country;
 import in.ashokit.entity.State;
 import in.ashokit.entity.User;
 
@@ -11,7 +11,7 @@ public interface UserService {
 
 	public boolean registerUser(User user);
 
-	public List<Country> getCountries();
+	public Map<Integer, String> getCountries();
 
 	public List<State> getStates(Integer countryId);
 

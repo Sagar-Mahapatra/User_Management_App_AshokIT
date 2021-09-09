@@ -1,10 +1,13 @@
 package in.ashokit.controller;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -19,17 +22,26 @@ public class UserController {
 	private UserService service;
 
 	@GetMapping("/loadRegForm")
-	public String loadRegistrationForm() {
-		return "userRegistration";
+	public String loadRegistrationForm(Model model) {
+		User user = new User();
+		Map<Integer, String> countries = service.getCountries();
+
+		model.addAttribute("user", user);
+		model.addAttribute("countries", countries);
+		return "userReg";
 	}
 
 	@PostMapping("/register")
-	public String UserRegistration(@RequestBody User user) {
+	public String UserRegistration(@ModelAttribute User user, Model model) {
 		boolean registerUser = service.registerUser(user);
 		if (registerUser) {
-			return "Please check your email to unlock account";
+
+			model.addAttribute("msg", "Successfully registered, Please check your registered email to unlock account");
+		} else {
+			model.addAttribute("msg", "something went wrong please try again !!!");
 		}
-		return "something went wrong please try again !!!";
+
+		return "userReg";
 	}
 
 	@PostMapping("/unlockAccount")

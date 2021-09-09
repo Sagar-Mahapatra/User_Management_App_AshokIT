@@ -1,5 +1,8 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!doctype html>
-<html xmlns:th="https://www.thymeleaf.org/">
+<html>
 <head>
 <!-- Required meta tags -->
 <meta charset="utf-8">
@@ -27,7 +30,8 @@ label, b {
 			</div>
 			<!-- card header end -->
 			<div class="card-body">
-				<form th:action="@{/register}" method="POST" th:object="${user}" id="regForm">
+				<form:form action="register" method="POST" modelAttribute="user"
+					id="regForm">
 					<!-- row#1 -->
 					<div class="row">
 						<div class="col-md-2">
@@ -35,7 +39,7 @@ label, b {
 							<!-- for attribute is used to link form input focus -->
 						</div>
 						<div class="col-md-5">
-							<input type="text" name="firstName" id="firstName"
+							<form:input path="firstName" name="firstName" id="firstName"
 								class="form-control" />
 						</div>
 						<div class="col-md-5">
@@ -50,7 +54,7 @@ label, b {
 							<!-- for attribute is used to link form input focus -->
 						</div>
 						<div class="col-md-5">
-							<input type="text" name="lastName" id="lastName"
+							<form:input path="lastName" name="lastName" id="lastName"
 								class="form-control" />
 						</div>
 						<div class="col-md-5">
@@ -65,7 +69,8 @@ label, b {
 							<!-- for attribute is used to link form input focus -->
 						</div>
 						<div class="col-md-5">
-							<input type="email" name="email" id="email" class="form-control" />
+							<form:input path="email" type="email" name="email" id="email"
+								class="form-control" />
 						</div>
 						<div class="col-md-5">
 							<!-- This is to show error section -->
@@ -80,7 +85,8 @@ label, b {
 							<!-- for attribute is used to link form input focus -->
 						</div>
 						<div class="col-md-5">
-							<input type="number" name="phNo" id="phNo" class="form-control" />
+							<form:input path="phNo" name="phNo" id="phNo"
+								class="form-control" />
 						</div>
 						<div class="col-md-5">
 							<!-- This is to show error section -->
@@ -94,7 +100,8 @@ label, b {
 							<label for="dob">dob</label>
 						</div>
 						<div class="col-md-5">
-							<input type="date" name="dob" id="dob" class="form-control" />
+							<form:input path="dob" type="date" name="dob" id="dob"
+								class="form-control" />
 						</div>
 						<div class="col-md-5">
 							<span id="dobError"></span>
@@ -106,9 +113,12 @@ label, b {
 							<label>gender</label>
 						</div>
 						<div class="col-md-5">
-							<input type="radio" name="gender" id="gender1" value="Male" />
-							Male <input type="radio" name="gender" id="gender2"
-								value="Female" /> Female
+							<form:radiobutton path="gender" name="gender" id="gender1"
+								value="Male" />
+							Male
+							<form:radiobutton path="gender" name="gender" id="gender2"
+								value="Female" />
+							Female
 						</div>
 						<div class="col-md-5">
 							<span id="genderError"></span>
@@ -121,12 +131,10 @@ label, b {
 							<label for="country">country</label>
 						</div>
 						<div class="col-md-5">
-							<select name="country" id="country" class="form-control">
-								<option value="-SELECT-">-SELECT-</option>
-								<option value="DEV">DEV</option>
-								<option value="QA">QA</option>
-								<option value="BA">BA</option>
-							</select>
+							<form:select path="country" name="country" id="country"
+								class="form-control">
+								<form:options items="${countries}"></form:options>
+							</form:select>
 						</div>
 						<div class="col-md-5">
 							<span id="countryError"></span>
@@ -139,12 +147,10 @@ label, b {
 							<label for="state">state</label>
 						</div>
 						<div class="col-md-5">
-							<select name="state" id="state" class="form-control">
-								<option value="-SELECT-">-SELECT-</option>
-								<option value="DEV">DEV</option>
-								<option value="QA">QA</option>
-								<option value="BA">BA</option>
-							</select>
+							<form:select path="state" name="state" id="state"
+								class="form-control">
+								<form:options items="${states}"></form:options>
+							</form:select>
 						</div>
 						<div class="col-md-5">
 							<span id="stateError"></span>
@@ -157,12 +163,10 @@ label, b {
 							<label for="city">city</label>
 						</div>
 						<div class="col-md-5">
-							<select name="city" id="city" class="form-control">
-								<option value="-SELECT-">-SELECT-</option>
-								<option value="DEV">DEV</option>
-								<option value="QA">QA</option>
-								<option value="BA">BA</option>
-							</select>
+							<form:select path="city" name="city" id="city"
+								class="form-control">
+								<form:options items="${cities}"></form:options>
+							</form:select>
 						</div>
 						<div class="col-md-5">
 							<span id="cityError"></span>
@@ -174,11 +178,11 @@ label, b {
 						<button type="submit" class="btn btn-success">Create</button>
 						<button type="reset" class="btn btn-danger">Clear</button>
 					</div>
-				</form>
+				</form:form>
 			</div>
 			<!-- card body end -->
 			<div class="card-footer bg-info text-white">
-				<div th:text="${message}"></div>
+				<h3 class="text-center">${msg}</h3>
 			</div>
 			<!-- footer end -->
 		</div>
