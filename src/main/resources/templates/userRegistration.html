@@ -1,136 +1,342 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-    />
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"
-    />
-  </head>
+<head>
+<!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
 
-  <body>
-    <div class="container">
-      <div class="card">
-        <div class="card-header bg-primary text-white text-center">
-          <h3 class="text-uppercase">User REGISTER PAGE</h3>
-        </div>
-        <div class="card-body">
-          <form id="myuserReg" action="#" method="POST">
-            <!-- row#1 -->
-            <div class="row">
-              <div class="col-2">
-                <label for="userId">User Id</label>
-              </div>
-              <div class="col-4">
-                <input
-                  type="text"
-                  name="userId"
-                  id="userId"
-                  class="form-control"
-                  placeholder="Enter User Id"
-                />
-              </div>
-              <div class="col-6">
-                <span id="userIdError"></span>
-              </div>
-            </div>
-            <!-- row#2 -->
-            <div class="row">
-              <div class="col-2">
-                <label>User Name</label>
-              </div>
-              <div class="col-4">
-                <input
-                  type="text"
-                  name="userName"
-                  id="userName"
-                  class="form-control"
-                  placeholder="Enter User Name"
-                />
-              </div>
-              <div class="col-6">
-                <span id="userNameError"></span>
-              </div>
-            </div>
-            <button type="submit" class="btn btn-success">Register</button>
-          </form>
-        </div>
-        <div class="card-footer bg-info">
-          <span class="text-white">User created!</span>
-        </div>
-      </div>
-    </div>
-    <script>
-      $(document).ready(function () {
-        //1. hide error section
-        $("#userIdError").hide();
-        $("#userNameError").hide();
+<style>
+.row {
+	padding-bottom: 10px;
+}
 
-        //2. define error variable
-        var userIdError = false;
-        var userNameError = false;
+label {
+	text-transform: uppercase;
+}
+</style>
+</head>
 
-        //3. define validate function
-        function validate_userId() {
-          //read form input value
-          var val = $("#userId").val();
-          //check user empty or not
-          if (val == "") {
-            $("#userIdError").show();
-            $("#userIdError").html("Enter <b>User ID</b>");
-            $("#userIdError").css("color", "red");
-            userIdError = false;
-          } else {
-            $("#userIdError").hide();
-            userIdError = true;
-          }
-          return userIdError;
-        }
+<body>
+	<div class="container">
+		<div class="card">
+			<div class="card-header bg-primary text-white text-center">
+				<h3>USER REGISTRATION FORM</h3>
+			</div>
+			<!-- card header end -->
+			<div class="card-body">
+				<form action="#" method="POST" id="regForm">
+					<!-- row#1 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label for="firstName">FIRST NAME</label>
+							<!-- for attribute is used to link form input focus -->
+						</div>
+						<div class="col-md-5">
+							<input type="text" name="firstName" id="firstName"
+								class="form-control" />
+						</div>
+						<div class="col-md-5">
+							<!-- This is to show error section -->
+							<span id="firstNameError"></span>
+						</div>
+					</div>
+					<!-- row#2 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label for="lastName">lastName</label>
+							<!-- for attribute is used to link form input focus -->
+						</div>
+						<div class="col-md-5">
+							<input type="text" name="lastName" id="lastName"
+								class="form-control" />
+						</div>
+						<div class="col-md-5">
+							<!-- This is to show error section -->
+							<span id="lastNameError"></span>
+						</div>
+					</div>
+					<!-- row#3 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label for="email">email</label>
+							<!-- for attribute is used to link form input focus -->
+						</div>
+						<div class="col-md-5">
+							<input type="email" name="email" id="email"
+								class="form-control" />
+						</div>
+						<div class="col-md-5">
+							<!-- This is to show error section -->
+							<span id="emailError"></span>
+						</div>
+					</div>
 
-        function validate_userName() {
-          //read form input value
-          var val = $("#userName").val();
-          if (val == "") {
-            $("#userNameError").show();
-            $("#userNameError").html("Please Enter <b>User Name</b>");
-            $("#userNameError").css("color", "red");
-            userNameError = false;
-          } else {
-            $("#userNameError").hide();
-            userNameError = true;
-          }
-          return userNameError;
-        }
+					<!-- row#3 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label for="userSal">USER SALARY</label>
+						</div>
+						<div class="col-md-5">
+							<input type="number" name="userSal" id="userSal"
+								class="form-control" />
+						</div>
+						<div class="col-md-5">
+							<span id="userSalError"></span>
+						</div>
+					</div>
 
-        //4. Link with action event
-        $("#userId").keyup(function () {
-          validate_userId();
-        });
+					<!-- row#3 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label for="userDept">USER DEPARTMENT</label>
+						</div>
+						<div class="col-md-5">
+							<select name="userDept" id="userDept" class="form-control">
+								<option value="-SELECT-">-SELECT-</option>
+								<option value="DEV">DEV</option>
+								<option value="QA">QA</option>
+								<option value="BA">BA</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<span id="userDeptError"></span>
+						</div>
+					</div>
 
-        $("#userName").keyup(function () {
-          validate_userName();
-        });
+					<!-- row#4 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label>USER GENDER</label>
+						</div>
+						<div class="col-md-5">
+							<input type="radio" name="userGen" id="userGen1" value="Male" />
+							Male <input type="radio" name="userGen" id="userGen2"
+								value="Female" /> Female
+						</div>
+						<div class="col-md-5">
+							<span id="userGenError"></span>
+						</div>
+					</div>
 
-        //5. on submit
-        $("#myuserReg").submit(function () {
-          validate_userId();
-          validate_userName();
+					<!-- row#5 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label for="userAddr">USER ADDRESS</label>
+						</div>
+						<div class="col-md-5">
+							<textarea name="userAddr" id="userAddr" class="form-control"></textarea>
+						</div>
+						<div class="col-md-5">
+							<span id="userAddrError"></span>
+						</div>
+					</div>
 
-          if (userIdError && userNameError) return true;
-          else return false;
-        });
-      });
-    </script>
-  </body>
+					<!-- row#6 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label>USER TIMING</label>
+						</div>
+						<div class="col-md-5">
+							<input type="checkbox" name="userShift" id="userShift1"
+								value="9AM" /> 9AM <input type="checkbox" name="userShift"
+								id="userShift2" value="1PM" /> 1PM <input type="checkbox"
+								name="userShift" id="userShift3" value="8PM" /> 8PM
+						</div>
+						<div class="col-md-5">
+							<span id="userShiftError"></span>
+						</div>
+					</div>
+
+					<!-- row#7 -->
+					<div class="row">
+						<div class="col-md-2">
+							<label>USER PASSWORD</label>
+						</div>
+						<div class="col-md-5">
+							<input type="password" name="userPwd" id="userPwd"
+								class="form-control" />
+						</div>
+						<div class="col-md-5">
+							<span id="userPwdError"></span>
+						</div>
+					</div>
+					<div class="text-center">
+						<button type="submit" class="btn btn-success">Create</button>
+						<button type="reset" class="btn btn-danger">Clear</button>
+					</div>
+				</form>
+			</div>
+			<!-- card body end -->
+			<div class="card-footer bg-info text-white">
+				<span><strong>USER '101 created </strong></span>
+			</div>
+			<!-- footer end -->
+		</div>
+		<!-- card end -->
+	</div>
+	<!-- container end -->
+
+	<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script type="text/javascript">
+		$(document).ready(
+				function() {
+
+					//form validation starts
+					//  hiding all error msg
+					$("#firstNameError").hide();
+					$("#lastNameError").hide();
+					$("#emailError").hide();
+					$("#userSalError").hide();
+					$("#userDeptError").hide();
+					$("#userGenError").hide();
+					$("#userAddrError").hide();
+					$("#userShiftError").hide();
+					$("#userPwdError").hide();
+
+					//  defining error variables
+
+					var firstNameError = false;
+					var lastNameError = false;
+					var emailError = false;
+					var userSalError = false;
+					var userDeptError = false;
+					var userAddrError = false;
+					var userPwdError = false;
+
+					//creating validate functions
+
+					function validate_firstName() {
+						//read input value
+						var val = $("#firstName").val();
+						if (val == "") {
+							$("#firstNameError").show();
+							$("#firstNameError").html(
+									"*Please Enter <b>Username</b>");
+							$("#firstNameError").css("color", "red");
+							firstNameError = false;
+						} else {
+							$("#userNameError").hide();
+							firstNameError = true;
+						}
+						return firstNameError;
+					}
+					function validate_lastName() {
+						//read input value
+						var val = $("#lastName").val();
+						if (val == "") {
+							$("#lastNameError").show();
+							$("#lastNameError").html(
+									"*Please Enter <b>Username</b>");
+							$("#lastNameError").css("color", "red");
+							lastNameError = false;
+						} else {
+							$("#lastNameError").hide();
+							lastNameError = true;
+						}
+						return lastNameError;
+					}
+					function validate_userSal() {
+						var val = $("#userSal").val();
+						if (val == "") {
+							$("#userSalError").show();
+							$("#userSalError").html(
+									"*Please Enter <b>Salary</b>");
+							$("#userSalError").css("color", "red");
+							userSalError = false;
+						} else {
+							$("#userSalError").hide();
+							userSalError = true;
+						}
+
+						return userSalError;
+					}
+					function validate_userDept() {
+						var val = $("#userDept").val();
+						if (val == "") {
+							$("#userDeptError").show();
+							$("#userDeptError").html(
+									"*Please Select <b>Department</b>");
+							$("#userDeptError").css("color", "red");
+							userDeptError = false;
+						} else {
+							$("#userDeptError").hide();
+							userDeptError = true;
+						}
+
+						return userDeptError;
+					}
+					function validate_userAddr() {
+						var val = $("#userAddr").val();
+						if (val == "") {
+							$("#userAddrError").show();
+							$("#userAddrError").html(
+									"*Please Enter <b>Address</b>");
+							$("#userAddrError").css("color", "red");
+							userAddrError = false;
+						} else {
+							$("#userAddrError").hide();
+							userAddrError = true;
+						}
+						return userAddrError;
+					}
+					function validate_userPwd() {
+						var val = $("#userPwd").val();
+						if (val == "") {
+							$("#userPwdError").show();
+							$("#userPwdError").html(
+									"*Please Enter <b>Password</b>");
+							$("#userPwdError").css("color", "red");
+							userAddrError = false;
+						} else {
+							$("#userPwdError").hide();
+							userPwdError = true;
+						}
+						return userPwdError;
+					}
+
+					//linking function with action event
+					$("#firstName").keyup(function() {
+						validate_firstName();
+					});
+					$("#lastName").keyup(function() {
+						validate_lastName();
+					});
+					$("#userSal").keyup(function() {
+						validate_userSal();
+					});
+					$("#userDept").keyup(function() {
+						validate_userDept();
+					});
+					$("#userAddr").keyup(function() {
+						validate_userAddr();
+					});
+					$("#userPwd").keyup(function() {
+						validate_userPwd();
+					});
+
+					$("#regForm").submit(
+							function() {
+								validate_userName();
+								validate_userSal();
+								validate_userDept();
+								validate_userAddr();
+								validate_userPwd();
+
+								if (userNameError && userSalError
+										&& userDeptError && userAddrError
+										&& userPwdError) {
+									return true;
+								}
+								return false;
+							});
+					//form validation ends
+				});
+	</script>
+</body>
+
 </html>
