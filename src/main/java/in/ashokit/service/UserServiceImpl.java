@@ -1,8 +1,6 @@
 package in.ashokit.service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,34 +36,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Map<Integer, String> getCountries() {
+	public List<Country> getCountriesList() {
 
-		List<Country> list = countryRepo.findAll();
-
-		Map<Integer, String> countries = new HashMap<>();
-
-		for (Country c : list) {
-			countries.put(c.getCountryId(), c.getCountryName());
-		}
-
-		return countries;
+		return countryRepo.findAll();
 	}
 
 	@Override
-	public Map<Integer,String> getStates(Integer countryId) {
-		Map<Integer,String> states=new HashMap<>();
-		List<State> statesByCountryId = stateRepo.getStatesByCountryId(countryId);
-		for(State s:statesByCountryId){
-			states.put(s.getStateId(), s.getStateName());
-		}
+	public List<State> getStatesListByCountryId(Integer countryId) {
 
-		return states;
+		return stateRepo.getStatesByCountryId(countryId);
 	}
 
 	@Override
-	public List<City> getCities(Integer stateId) {
+	public List<City> getCitiesByStateId(Integer stateId) {
 
-		return cityRepo.findAll();
+		return cityRepo.getCitiesByStateId(stateId);
 	}
 
 	@Override
@@ -90,7 +75,7 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.getUserByEmailAndPsw(email, psw);
 		if (user == null) {
 			return "Invalid Credentials";
-		} else if (user.getAccountStatus().equalsIgnoreCase("Locked")) {
+		} else if (user.getAccountStatus().equals("Locked")) {
 			return "Your Account is Locked";
 		} else {
 			return "Welcome To Ashok IT.....";

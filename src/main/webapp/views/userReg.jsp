@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!doctype html>
 <html>
 <head>
@@ -131,10 +132,13 @@ label, b {
 							<label for="country">country</label>
 						</div>
 						<div class="col-md-5">
-							<form:select path="country" name="country" id="country"
-								class="form-control">
-								<form:options items="${countries}"></form:options>
-							</form:select>
+							<select name="country" id="country" class="form-control">
+								<option>--SELECT--</option>
+								<c:forEach var="country" items="${countries}">
+									<option value="${country.countryId}">${country.countryName}</option>
+								</c:forEach>
+
+							</select>
 						</div>
 						<div class="col-md-5">
 							<span id="countryError"></span>
@@ -147,10 +151,9 @@ label, b {
 							<label for="state">state</label>
 						</div>
 						<div class="col-md-5">
-							<form:select path="state" name="state" id="state"
-								class="form-control">
-								<form:options items="${states}"></form:options>
-							</form:select>
+							<select name="state" id="state" class="form-control">
+								<option>--SELECT--</option>
+							</select>
 						</div>
 						<div class="col-md-5">
 							<span id="stateError"></span>
@@ -163,10 +166,9 @@ label, b {
 							<label for="city">city</label>
 						</div>
 						<div class="col-md-5">
-							<form:select path="city" name="city" id="city"
-								class="form-control">
-								<form:options items="${cities}"></form:options>
-							</form:select>
+							<select name="city" id="city" class="form-control">
+								<option>--SELECT--</option>
+							</select>
 						</div>
 						<div class="col-md-5">
 							<span id="cityError"></span>
@@ -198,6 +200,63 @@ label, b {
 				.ready(
 						function() {
 
+							//getting cascading dropdown list by ajax
+							//getting states data starts
+							$('#country')
+									.change(
+											function() {
+												var countryId = $(this).val();
+												$
+														.ajax({
+															type : 'GET',
+															url : 'http://localhost:9595/user-management-app/user/getStatesByCountry/'
+																	+ countryId,
+															success : function(
+																	result) {
+																var res = JSON
+																		.parse(result);
+																var s = "";
+																for (var i = 0; i < res.length; i++) {
+																	s += '<option value="' + res[i].stateId + '">'
+																			+ res[i].stateName
+																			+ '</option>';
+																}
+
+																$('#state')
+																		.html(s);
+															}
+														});
+											});
+							//getting states data ends
+							//getting cities data starts
+							$('#state')
+									.change(
+											function() {
+												var stateId = $(this).val();
+												$
+														.ajax({
+															type : 'GET',
+															url : 'http://localhost:9595/user-management-app/user/getCitiesByState/'
+																	+ stateId,
+															success : function(
+																	result) {
+																console
+																		.log(result);
+																var res = JSON
+																		.parse(result);
+																var s = "";
+																for (var i = 0; i < res.length; i++) {
+																	s += '<option value="' + res[i].cityId + '">'
+																			+ res[i].cityName
+																			+ '</option>';
+																}
+
+																$('#city')
+																		.html(s);
+															}
+														});
+											});
+							//getting cities data ends
 							//form validation starts
 							//  hiding all error msg
 							$("#firstNameError").hide();
@@ -247,7 +306,7 @@ label, b {
 							function validate_lastName() {
 								//read input value
 								var val = $("#lastName").val();
-								var exp = /^[A-Za-z]{3,8}$/;
+								var exp = /^[A-Za-z]{3,10}$/;
 								if (val == "") {
 									$("#lastNameError").show();
 									$("#lastNameError").html(
@@ -313,7 +372,7 @@ label, b {
 									$("#dobError").html(
 											"*Please Enter <b>dob</b>");
 									$("#dobError").css("color", "red");
-									userSalError = false;
+									dobError = false;
 								} else {
 									$("#dobError").hide();
 									dobError = true;
@@ -346,10 +405,10 @@ label, b {
 										validate_email();
 										validate_phNo();
 										validate_dob();
-										validate_gender();
+
 										if (firstNameError && lastNameError
 												&& emailError && phNoError
-												&& dobError && genderError) {
+												&& dobError) {
 											return true;
 										}
 										return false;
