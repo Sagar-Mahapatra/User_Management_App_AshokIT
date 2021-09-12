@@ -3,6 +3,8 @@ package in.ashokit.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +56,25 @@ public class UserController {
 		return gson.toJson(service.getCitiesByStateId(stateId));
 	}
 
+	@ResponseBody
+	@GetMapping("/getCountries")
+	public String getCountries() {
+		Gson gson = new Gson();
+		return gson.toJson(service.getCountriesList());
+	}
+
+	@ResponseBody
+	@GetMapping("/getUserById/{userId}")
+	public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
+		try {
+			return new ResponseEntity<User>(service.getUserById(userId), HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+		}
+
+	}
+
 	@PostMapping("/register")
 	public String UserRegistration(@ModelAttribute User user, Model model) {
 		boolean registerUser = service.registerUser(user);
@@ -97,11 +118,24 @@ public class UserController {
 		return "userLogin";
 	}
 
+	@GetMapping("/viewUsers")
+	public String viewUsers(Model model) {
+		model.addAttribute("users", service.getAllUsers());
+		model.addAttribute("user", new User());
+		return "viewUsers";
+	}
+
 	@PostMapping("/userLogin")
 	public String userLogin(@RequestParam String email, @RequestParam String password, Model model) {
-		String msg = service.loginUser(email, password);
-		model.addAttribute("msg", msg);
-		return "userLogin";
+		String[] msg = service.loginUser(email, password);
+		if (msg[1].equalsIgnoreCase("failure")) {
+			model.addAttribute("msg", msg[0]);
+			return "userLogin";
+		}
+
+		model.addAttribute("msg", msg[0]);
+
+		return "redirect:viewUsers";
 
 	}
 
@@ -119,6 +153,17 @@ public class UserController {
 
 		return "forgotPsw";
 
+	}
+
+	@GetMapping("/deleteuser")
+	public String deleteUser(@RequestParam Integer userId, Model model) {
+		boolean deleteUser = service.deleteUser(userId);
+		if (deleteUser) {
+			model.addAttribute("deleteMsg", "User Deleted Successfully...");
+		} else {
+			model.addAttribute("deleteMsg", "Something Went Wrong !!!");
+		}
+		return "redirect:viewUsers";
 	}
 
 }

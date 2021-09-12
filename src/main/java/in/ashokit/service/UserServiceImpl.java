@@ -1,6 +1,7 @@
 package in.ashokit.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,14 +72,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String loginUser(String email, String psw) {
+	public String[] loginUser(String email, String psw) {
+		String[] msg = new String[2];
 		User user = userRepo.getUserByEmailAndPsw(email, psw);
 		if (user == null) {
-			return "Invalid Credentials";
+			msg[0] = "Invalid Credentials";
+			msg[1] = "failure";
+			return msg;
 		} else if (user.getAccountStatus().equals("Locked")) {
-			return "Your Account is Locked";
+			msg[0] = "Your Account is Locked";
+			msg[1] = "failure";
+			return msg;
 		} else {
-			return "Welcome To Ashok IT.....";
+			msg[0] = "Welcome To Ashok IT.....";
+			msg[1] = "success";
+			return msg;
 		}
 
 	}
@@ -96,6 +104,32 @@ public class UserServiceImpl implements UserService {
 
 		return "we have sent your password on registered email:- " + password;
 
+	}
+
+	@Override
+	public List<User> getAllUsers() {
+
+		return userRepo.findAll();
+	}
+
+	@Override
+	public boolean deleteUser(Integer id) {
+		Optional<User> user = userRepo.findById(id);
+		if (user.isPresent()) {
+			userRepo.deleteById(id);
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public User getUserById(Integer id) {
+		Optional<User> user = userRepo.findById(id);
+		if (user.isPresent()) {
+			return user.get();
+		}
+		return null;
 	}
 
 }

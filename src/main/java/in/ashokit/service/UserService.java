@@ -13,7 +13,7 @@ public interface UserService {
 
 	public boolean unlockAccount(String email, String tempPsw, String newPsw);
 
-	public String loginUser(String email, String psw);
+	public String[] loginUser(String email, String psw);
 
 	public String forgotPsw(String email);
 
@@ -22,5 +22,11 @@ public interface UserService {
 	public List<State> getStatesListByCountryId(Integer countryId);
 
 	public List<City> getCitiesByStateId(Integer stateId);
+
+	public List<User> getAllUsers();
+
+	public boolean deleteUser(Integer id);
+
+	public User getUserById(Integer id);
 
 }
