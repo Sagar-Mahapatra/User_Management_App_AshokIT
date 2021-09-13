@@ -385,13 +385,15 @@ label, b {
 
 								var length = $("[name='gender']:checked").length;
 								if (length == 0) {
-									alert('Please Select Your Gender');
+									//alert('Please Select Your Gender');
 									$("#genderError").show();
 									$("#genderError")
 											.html(
 													'*Please Select <b>Your Gender</b>');
 									$("#genderError").css("color", "red");
+									genderError = false;
 								} else {
+									$("#genderError").hide();
 									genderError = true;
 								}
 
@@ -413,6 +415,9 @@ label, b {
 							});
 							$("#dob").keyup(function() {
 								validate_dob();
+							});
+							$("[name='gender']").click(function() {
+								validate_gender();
 							});
 
 							$("#regForm").submit(
