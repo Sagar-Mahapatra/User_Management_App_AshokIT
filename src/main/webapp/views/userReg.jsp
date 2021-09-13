@@ -381,6 +381,23 @@ label, b {
 								return dobError;
 							}
 
+							function validate_gender() {
+
+								var length = $("[name='gender']:checked").length;
+								if (length == 0) {
+									alert('Please Select Your Gender');
+									$("#genderError").show();
+									$("#genderError")
+											.html(
+													'*Please Select <b>Your Gender</b>');
+									$("#genderError").css("color", "red");
+								} else {
+									genderError = true;
+								}
+
+								return genderError;
+							}
+
 							//linking function with action event
 							$("#firstName").keyup(function() {
 								validate_firstName();
@@ -405,10 +422,10 @@ label, b {
 										validate_email();
 										validate_phNo();
 										validate_dob();
-
+										validate_gender();
 										if (firstNameError && lastNameError
 												&& emailError && phNoError
-												&& dobError) {
+												&& dobError && genderError) {
 											return true;
 										}
 										return false;
