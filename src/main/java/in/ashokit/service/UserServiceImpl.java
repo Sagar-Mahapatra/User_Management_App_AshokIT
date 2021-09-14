@@ -132,4 +132,9 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
+	private boolean isTempPswValid(String tempPsw) {
+		return false;
+
+	}
+
 }
