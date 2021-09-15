@@ -1,6 +1,6 @@
 package in.ashokit.controller;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 
-import in.ashokit.entity.Country;
+import in.ashokit.dto.LoginForm;
+import in.ashokit.dto.UnlockAccForm;
+import in.ashokit.dto.UserForm;
 import in.ashokit.entity.User;
 import in.ashokit.service.UserService;
 
@@ -31,11 +34,11 @@ public class UserController {
 	@GetMapping("/loadRegForm")
 	public String loadRegistrationForm(Model model) {
 
-		User user = new User();
+		UserForm userForm = new UserForm();
 
-		List<Country> countries = service.getCountriesList();
+		Map<Integer, String> countries = service.getCountries();
 
-		model.addAttribute("user", user);
+		model.addAttribute("user", userForm);
 		model.addAttribute("countries", countries);
 
 		return "userReg";
@@ -45,7 +48,7 @@ public class UserController {
 	@GetMapping("/getStatesByCountry/{countryId}")
 	public String getStatesByCountry(@PathVariable Integer countryId) {
 		Gson gson = new Gson();
-		return gson.toJson(service.getStatesListByCountryId(countryId));
+		return gson.toJson(service.getStates(countryId));
 	}
 
 	@ResponseBody
@@ -53,14 +56,14 @@ public class UserController {
 	public String getCitiesByState(@PathVariable Integer stateId) {
 		Gson gson = new Gson();
 		System.out.println(stateId);
-		return gson.toJson(service.getCitiesByStateId(stateId));
+		return gson.toJson(service.getCities(stateId));
 	}
 
 	@ResponseBody
 	@GetMapping("/getCountries")
 	public String getCountries() {
 		Gson gson = new Gson();
-		return gson.toJson(service.getCountriesList());
+		return gson.toJson(service.getCountries());
 	}
 
 	@ResponseBody
@@ -76,13 +79,13 @@ public class UserController {
 	}
 
 	@PostMapping("/register")
-	public String UserRegistration(@ModelAttribute User user, Model model) {
-		boolean registerUser = service.registerUser(user);
-		System.out.println(user);
+	public String UserRegistration(@ModelAttribute UserForm userForm, Model model) {
+		boolean registerUser = service.saveUser(userForm);
+		System.out.println(userForm);
 		if (registerUser) {
 
 			model.addAttribute("msg", "Successfully registered, Please check your registered email to unlock account");
-			model.addAttribute("user", new User());
+			model.addAttribute("user", new UserForm());
 		} else {
 			model.addAttribute("msg", "something went wrong please try again !!!");
 		}
@@ -97,10 +100,9 @@ public class UserController {
 	}
 
 	@PostMapping("/unlockAccount")
-	public String unlockAccount(@RequestParam String email, @RequestParam String tempPsw, @RequestParam String newPsw,
-			Model model) {
+	public String unlockAccount(@ModelAttribute UnlockAccForm unlockAccForm, Model model) {
 
-		boolean unlockAccount = service.unlockAccount(email, tempPsw, newPsw);
+		boolean unlockAccount = service.unlockAccount(unlockAccForm);
 		if (unlockAccount) {
 			model.addAttribute("msg", "Account Unlocked, please proceed with login");
 
@@ -119,23 +121,20 @@ public class UserController {
 	}
 
 	@GetMapping("/viewUsers")
-	public String viewUsers(Model model) {
+	public String viewUsers(Model model, RedirectAttributes attr) {
+
 		model.addAttribute("users", service.getAllUsers());
 		model.addAttribute("user", new User());
+		model.addAttribute("msg", attr.getAttribute("deleteMsg"));
 		return "viewUsers";
 	}
 
 	@PostMapping("/userLogin")
-	public String userLogin(@RequestParam String email, @RequestParam String password, Model model) {
-		String[] msg = service.loginUser(email, password);
-		if (msg[1].equalsIgnoreCase("failure")) {
-			model.addAttribute("msg", msg[0]);
-			return "userLogin";
-		}
+	public String userLogin(@ModelAttribute LoginForm loginForm, Model model) {
+		String msg = service.loginCheck(loginForm);
 
-		model.addAttribute("msg", msg[0]);
-
-		return "redirect:viewUsers";
+		model.addAttribute("msg", msg);
+		return "userLogin";
 
 	}
 
@@ -147,7 +146,7 @@ public class UserController {
 
 	@PostMapping("/forgotPassword")
 	public String forgotPassword(@RequestParam String email, Model model) {
-		String msg = service.forgotPsw(email);
+		String msg = service.forgotPwd(email);
 
 		model.addAttribute("msg", msg);
 
@@ -156,12 +155,12 @@ public class UserController {
 	}
 
 	@GetMapping("/deleteuser")
-	public String deleteUser(@RequestParam Integer userId, Model model) {
+	public String deleteUser(@RequestParam Integer userId, Model model, RedirectAttributes attr) {
 		boolean deleteUser = service.deleteUser(userId);
 		if (deleteUser) {
-			model.addAttribute("deleteMsg", "User Deleted Successfully...");
+			attr.addAttribute("deleteMsg", "User Deleted Successfully...");
 		} else {
-			model.addAttribute("deleteMsg", "Something Went Wrong !!!");
+			attr.addAttribute("deleteMsg", "Something Went Wrong !!!");
 		}
 		return "redirect:viewUsers";
 	}

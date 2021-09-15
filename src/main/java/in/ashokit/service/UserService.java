@@ -1,40 +1,56 @@
 package in.ashokit.service;
 
 import java.util.List;
+import java.util.Map;
 
-import in.ashokit.entity.City;
-import in.ashokit.entity.Country;
-import in.ashokit.entity.State;
+import in.ashokit.dto.LoginForm;
+import in.ashokit.dto.UnlockAccForm;
+import in.ashokit.dto.UserForm;
 import in.ashokit.entity.User;
 
 public interface UserService {
 
-	// public String loginCheck(LoginForm loginForm);
-	// public boolean saveUser(UserForm userForm);
-	// public boolean emailUnique(String email);
-	// public boolean unlockAccount(UnLockAccForm unLockAccForm);
-	// public Map<Integer,String> getContries();
-	// public Map<Integer,String> getStates(Integer countryId);
-	// public Map<Integer,String> getCities(Integer stateId);
+	public String loginCheck(LoginForm loginForm);
 
-	public String forgotPsw(String email);
+	public Map<Integer, String> getCountries();
 
-	public boolean registerUser(User user);
+	public Map<Integer, String> getStates(Integer countryId);
 
-	public boolean unlockAccount(String email, String tempPsw, String newPsw);
+	public Map<Integer, String> getCities(Integer stateId);
 
-	public String[] loginUser(String email, String psw);
+	public boolean emailUnique(String email);
 
-	public List<Country> getCountriesList();
+	public boolean saveUser(UserForm userForm);
 
-	public List<State> getStatesListByCountryId(Integer countryId);
+	public boolean unlockAccount(UnlockAccForm unlockAccForm);
 
-	public List<City> getCitiesByStateId(Integer stateId);
+	public String forgotPwd(String emailId);
+
+	public User getUserById(Integer userId);
+
+	public boolean deleteUser(Integer userId);
 
 	public List<User> getAllUsers();
 
-	public boolean deleteUser(Integer id);
-
-	public User getUserById(Integer id);
-
+	/*
+	 * public String forgotPsw(String email);
+	 * 
+	 * public boolean registerUser(User user);
+	 * 
+	 * public boolean unlockAccount(String email, String tempPsw, String newPsw);
+	 * 
+	 * public String[] loginUser(String email, String psw);
+	 * 
+	 * public List<Country> getCountriesList();
+	 * 
+	 * public List<State> getStatesListByCountryId(Integer countryId);
+	 * 
+	 * public List<City> getCitiesByStateId(Integer stateId);
+	 * 
+	 * public List<User> getAllUsers();
+	 * 
+	 * public boolean deleteUser(Integer id);
+	 * 
+	 * public User getUserById(Integer id);
+	 */
 }

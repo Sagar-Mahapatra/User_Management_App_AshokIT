@@ -5,8 +5,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import lombok.Data;
+
+@Data
 @Entity
-@Table(name = "city")
+@Table(name = "CITIES_MASTER")
 public class City {
 
 	@Id

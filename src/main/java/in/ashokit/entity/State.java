@@ -8,7 +8,7 @@ import javax.persistence.Table;
 import lombok.Data;
 
 @Entity
-@Table(name = "state")
+@Table(name = "STATES_MASTER")
 @Data
 public class State {
 	@Id
