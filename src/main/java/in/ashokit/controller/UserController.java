@@ -37,6 +37,7 @@ public class UserController {
 		UserForm userForm = new UserForm();
 
 		Map<Integer, String> countries = service.getCountries();
+		System.out.println(countries);
 
 		model.addAttribute("user", userForm);
 		model.addAttribute("countries", countries);

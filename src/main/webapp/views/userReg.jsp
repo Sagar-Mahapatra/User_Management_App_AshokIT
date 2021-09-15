@@ -135,7 +135,7 @@ label, b {
 							<select name="country" id="country" class="form-control">
 								<option>--SELECT--</option>
 								<c:forEach var="country" items="${countries}">
-									<option value="${country.countryId}">${country.countryName}</option>
+									<option value="${country.getKey()}">${country.getValue()}</option>
 								</c:forEach>
 
 							</select>
@@ -206,6 +206,7 @@ label, b {
 									.change(
 											function() {
 												var countryId = $(this).val();
+												
 												$
 														.ajax({
 															type : 'GET',
@@ -217,8 +218,8 @@ label, b {
 																		.parse(result);
 																var s = "";
 																for (var i = 0; i < res.length; i++) {
-																	s += '<option value="' + res[i].stateId + '">'
-																			+ res[i].stateName
+																	s += '<option value="' + res[i].getKey() + '">'
+																			+ res[i].getValue()
 																			+ '</option>';
 																}
 
