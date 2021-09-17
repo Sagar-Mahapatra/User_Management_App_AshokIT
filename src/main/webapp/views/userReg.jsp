@@ -135,7 +135,7 @@ label, b {
 							<select name="country" id="country" class="form-control">
 								<option>--SELECT--</option>
 								<c:forEach var="country" items="${countries}">
-									<option value="${country.getKey('CountryId')}">${country.getValue('CountryName')}</option>
+									<option value="${country.getKey()}">${country.getValue()}</option>
 								</c:forEach>
 
 							</select>
