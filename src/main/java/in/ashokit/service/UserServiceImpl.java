@@ -34,15 +34,8 @@ public class UserServiceImpl implements UserService {
 	private StateRepository stateRepo;
 	@Autowired
 	private CityRepository cityRepo;
-
-	private Map<String, String> messages;
-
-	public UserServiceImpl() {
-
-		messages = AppProperties.getProperties();
-		System.out.println(messages);
-
-	}
+	@Autowired
+	private AppProperties appProps;
 
 	public boolean isTempPwdValid(String email, String tempPwd) {
 
@@ -60,14 +53,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String loginCheck(LoginForm loginForm) {
+
+		Map<String, String> messages = appProps.getMessages();
 		User user = userRepo.getUserByEmailAndPsw(loginForm.getEmail(), loginForm.getPassword());
 
 		if (user == null) {
-			return "invalidCredentials";
+			return messages.get("invalidCredentials");
 		} else if (user.getAccountStatus().equals("Locked")) {
-			return "accountLocked";
+			return messages.get("accountLocked");
 		} else {
-			return "loginSuccess";
+			return messages.get("loginSuccess");
 		}
 
 	}
@@ -138,12 +133,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public String forgotPwd(String emailId) {
+		Map<String, String> messages = appProps.getMessages();
 		User user = userRepo.getUserByEmail(emailId);
 		if (user == null) {
-			return "We can't find a user with that e-mail address";
+			return messages.get("forgotPwdFail");
 		}
 		// logic to send email to user email-id
-		return "we have sent password on your registered email-id";
+		return messages.get("forgotPwdSuccess");
 	}
 
 	@Override

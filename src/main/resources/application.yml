@@ -37,7 +37,8 @@ app:
      loginSuccess: Welcome To Ashok IT.....
      regSuccess: Successfully registered, Please check your registered email to unlock account
      regFail: something went wrong please try again !!!
-     
+     forgotPwdSuccess: we have sent password on your registered email-id
+     forgotPwdFail: We can't find a user with that e-mail address
      
      
      
