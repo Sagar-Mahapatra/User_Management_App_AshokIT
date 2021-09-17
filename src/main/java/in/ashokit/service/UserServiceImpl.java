@@ -21,6 +21,7 @@ import in.ashokit.repository.CityRepository;
 import in.ashokit.repository.CountryRepository;
 import in.ashokit.repository.StateRepository;
 import in.ashokit.repository.UserRepository;
+import in.ashokit.utils.PasswordGenerator;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -34,27 +35,26 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private CityRepository cityRepo;
 
-	private Map<String, String> props;
+	private Map<String, String> messages;
 
 	public UserServiceImpl() {
 
-		props = AppProperties.getProperties();
-		System.out.println(props);
+		messages = AppProperties.getProperties();
+		System.out.println(messages);
 
 	}
 
-	private boolean isTempPwdValid(String email, String tempPwd) {
+	public boolean isTempPwdValid(String email, String tempPwd) {
 
 		User user = userRepo.getUserByEmail(email);
 
-		if (user != null && user.getPassword().equals(tempPwd)) {
+		return (user != null && user.getPassword().equals(tempPwd)) ? true : false;
 
-			return true;
+	}
 
-		} else {
+	private String generateTempPsw() {
 
-			return false;
-		}
+		return PasswordGenerator.generatePassword(6);
 
 	}
 
@@ -63,11 +63,11 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.getUserByEmailAndPsw(loginForm.getEmail(), loginForm.getPassword());
 
 		if (user == null) {
-			return props.get("invalidCredentials");
+			return "invalidCredentials";
 		} else if (user.getAccountStatus().equals("Locked")) {
-			return props.get("accountLocked");
+			return "accountLocked";
 		} else {
-			return props.get("loginSuccess");
+			return "loginSuccess";
 		}
 
 	}
@@ -106,11 +106,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean emailUnique(String email) {
 		User user = userRepo.getUserByEmail(email);
-		if (user == null) {
-			return true;
-		} else {
-			return false;
-		}
+
+		return (user == null) ? true : false;
 
 	}
 
@@ -118,7 +115,7 @@ public class UserServiceImpl implements UserService {
 	public boolean saveUser(UserForm userForm) {
 		User user = new User();
 		user.setAccountStatus("Locked");
-		user.setPassword("dummy");
+		user.setPassword(generateTempPsw());
 		BeanUtils.copyProperties(userForm, user);
 		User savedUser = userRepo.save(user);
 		return savedUser != null && savedUser.getUserId() != null;
@@ -126,14 +123,15 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean unlockAccount(UnlockAccForm unlockAccForm) {
-		boolean tempPwdValid = isTempPwdValid(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
-		if (tempPwdValid) {
-			User user = userRepo.getUserByEmailAndPsw(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
+
+		User user = userRepo.getUserByEmailAndPsw(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
+		if (user != null) {
 			user.setPassword(unlockAccForm.getNewPsw());
 			user.setAccountStatus("Unlocked");
 			userRepo.save(user);
 			return true;
 		}
+
 		return false;
 
 	}
@@ -175,71 +173,4 @@ public class UserServiceImpl implements UserService {
 		return userRepo.findAll();
 	}
 
-	/*
-	 * @Override public boolean registerUser(User user) {
-	 * user.setAccountStatus("Locked"); user.setPassword("dummy"); User savedUser =
-	 * userRepo.save(user);
-	 * 
-	 * return savedUser != null && savedUser.getUserId() != null; }
-	 * 
-	 * @Override public List<Country> getCountriesList() {
-	 * 
-	 * return countryRepo.findAll(); }
-	 * 
-	 * @Override public List<State> getStatesListByCountryId(Integer countryId) {
-	 * 
-	 * return stateRepo.getStatesByCountryId(countryId); }
-	 * 
-	 * @Override public List<City> getCitiesByStateId(Integer stateId) {
-	 * 
-	 * return cityRepo.getCitiesByStateId(stateId); }
-	 * 
-	 * @Override public boolean unlockAccount(String email, String tempPsw, String
-	 * newPsw) {
-	 * 
-	 * User user = userRepo.getUserByEmail(email);
-	 * 
-	 * if (user != null) { if (user.getPassword().equalsIgnoreCase(tempPsw)) {
-	 * user.setPassword(newPsw); user.setAccountStatus("Unlocked");
-	 * userRepo.save(user); return true; } }
-	 * 
-	 * return false; }
-	 * 
-	 * @Override public String[] loginUser(String email, String psw) { String[] msg
-	 * = new String[2]; User user = userRepo.getUserByEmailAndPsw(email, psw); if
-	 * (user == null) { msg[0] = "Invalid Credentials"; msg[1] = "failure"; return
-	 * msg; } else if (user.getAccountStatus().equals("Locked")) { msg[0] =
-	 * "Your Account is Locked"; msg[1] = "failure"; return msg; } else { msg[0] =
-	 * "Welcome To Ashok IT....."; msg[1] = "success"; return msg; }
-	 * 
-	 * }
-	 * 
-	 * @Override public String forgotPsw(String email) { User user =
-	 * userRepo.getUserByEmail(email); if (user == null) { return
-	 * "We can't find a user with that e-mail address"; }
-	 * 
-	 * String password = user.getPassword();
-	 * 
-	 * // logic to send password to mail id
-	 * 
-	 * return "we have sent your password on registered email:- " + password;
-	 * 
-	 * }
-	 * 
-	 * @Override public List<User> getAllUsers() {
-	 * 
-	 * return userRepo.findAll(); }
-	 * 
-	 * @Override public boolean deleteUser(Integer id) { Optional<User> user =
-	 * userRepo.findById(id); if (user.isPresent()) { userRepo.deleteById(id);
-	 * return true; }
-	 * 
-	 * return false; }
-	 * 
-	 * @Override public User getUserById(Integer id) { Optional<User> user =
-	 * userRepo.findById(id); if (user.isPresent()) { return user.get(); } return
-	 * null; }
-	 * 
-	 * 
-	 */
 }
