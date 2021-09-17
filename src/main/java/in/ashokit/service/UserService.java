@@ -3,9 +3,9 @@ package in.ashokit.service;
 import java.util.List;
 import java.util.Map;
 
-import in.ashokit.dto.LoginForm;
-import in.ashokit.dto.UnlockAccForm;
-import in.ashokit.dto.UserForm;
+import in.ashokit.bindings.LoginForm;
+import in.ashokit.bindings.UnlockAccForm;
+import in.ashokit.bindings.UserForm;
 import in.ashokit.entity.User;
 
 public interface UserService {

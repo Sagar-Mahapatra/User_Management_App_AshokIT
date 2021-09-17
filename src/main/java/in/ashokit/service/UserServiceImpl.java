@@ -9,13 +9,14 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import in.ashokit.dto.LoginForm;
-import in.ashokit.dto.UnlockAccForm;
-import in.ashokit.dto.UserForm;
+import in.ashokit.bindings.LoginForm;
+import in.ashokit.bindings.UnlockAccForm;
+import in.ashokit.bindings.UserForm;
 import in.ashokit.entity.City;
 import in.ashokit.entity.Country;
 import in.ashokit.entity.State;
 import in.ashokit.entity.User;
+import in.ashokit.props.AppProperties;
 import in.ashokit.repository.CityRepository;
 import in.ashokit.repository.CountryRepository;
 import in.ashokit.repository.StateRepository;
@@ -32,6 +33,15 @@ public class UserServiceImpl implements UserService {
 	private StateRepository stateRepo;
 	@Autowired
 	private CityRepository cityRepo;
+
+	private Map<String, String> props;
+
+	public UserServiceImpl() {
+
+		props = AppProperties.getProperties();
+		System.out.println(props);
+
+	}
 
 	private boolean isTempPwdValid(String email, String tempPwd) {
 
@@ -53,11 +63,11 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.getUserByEmailAndPsw(loginForm.getEmail(), loginForm.getPassword());
 
 		if (user == null) {
-			return "Invalid Credentials";
+			return props.get("invalidCredentials");
 		} else if (user.getAccountStatus().equals("Locked")) {
-			return "Your Account is Locked";
+			return props.get("accountLocked");
 		} else {
-			return "Welcome To Ashok IT.....";
+			return props.get("loginSuccess");
 		}
 
 	}

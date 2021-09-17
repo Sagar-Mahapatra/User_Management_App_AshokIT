@@ -1,4 +1,4 @@
-package in.ashokit.dto;
+package in.ashokit.bindings;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

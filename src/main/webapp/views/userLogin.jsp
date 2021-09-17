@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +28,8 @@ label {
 				<h3>USER LOGIN PAGE</h3>
 			</div>
 			<div class="card-body">
-				<form id="myLoginForm" action="userLogin" method="POST">
+				<form:form id="myLoginForm" modelAttribute="loginForm"
+					action="userLogin" method="POST">
 					<!-- row#1 -->
 					<div class="row">
 						<div class="col-2">
@@ -73,7 +75,7 @@ label {
 
 					</div>
 
-				</form>
+				</form:form>
 			</div>
 			<div class="card-footer">
 				<h3 class="text-success">${msg}</h3>

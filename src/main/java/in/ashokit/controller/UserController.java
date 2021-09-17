@@ -18,9 +18,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.google.gson.Gson;
 
-import in.ashokit.dto.LoginForm;
-import in.ashokit.dto.UnlockAccForm;
-import in.ashokit.dto.UserForm;
+import in.ashokit.bindings.LoginForm;
+import in.ashokit.bindings.UnlockAccForm;
+import in.ashokit.bindings.UserForm;
 import in.ashokit.entity.User;
 import in.ashokit.service.UserService;
 
@@ -116,8 +116,8 @@ public class UserController {
 	}
 
 	@GetMapping("/loadLoginForm")
-	public String loadLoginForm() {
-
+	public String loadLoginForm(Model model) {
+		model.addAttribute("loginForm", new LoginForm());
 		return "userLogin";
 	}
 
@@ -133,6 +133,7 @@ public class UserController {
 	@PostMapping("/userLogin")
 	public String userLogin(@ModelAttribute LoginForm loginForm, Model model) {
 		String msg = service.loginCheck(loginForm);
+		System.out.println(msg);
 
 		model.addAttribute("msg", msg);
 		return "userLogin";

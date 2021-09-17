@@ -1,4 +1,4 @@
-package in.ashokit.dto;
+package in.ashokit.bindings;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +14,7 @@ public class UnlockAccForm {
 	private String tempPsw;
 
 	private String newPsw;
+
+	private String confirmPsw;
 
 }
