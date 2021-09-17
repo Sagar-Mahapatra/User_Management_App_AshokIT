@@ -145,10 +145,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User getUserById(Integer userId) {
 		Optional<User> user = userRepo.findById(userId);
-		if (user.isPresent()) {
-			return user.get();
-		}
-		return null;
+
+		return (user.isPresent()) ? user.get() : null;
+
 	}
 
 	@Override
@@ -167,6 +166,13 @@ public class UserServiceImpl implements UserService {
 	public List<User> getAllUsers() {
 
 		return userRepo.findAll();
+	}
+
+	@Override
+	public boolean isphNoUnique(String phNo) {
+		Integer phNoCount = userRepo.getPhNoCount(phNo);
+		return (phNoCount == 0) ? true : false;
+
 	}
 
 }

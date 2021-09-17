@@ -167,4 +167,20 @@ public class UserController {
 		return "redirect:viewUsers";
 	}
 
+	@GetMapping("/emailUnique")
+	@ResponseBody
+	public String emailUniqueCheck(@RequestParam String email) {
+
+		return (service.emailUnique(email)) ? "" : "Email-Id already exists";
+
+	}
+
+	@GetMapping("/phNoUnique")
+	@ResponseBody
+	public String phNoUniqueCheck(@RequestParam String phNo) {
+		boolean isphNoUnique = service.isphNoUnique(phNo);
+		return (isphNoUnique) ? "" : "Phone Number already exist";
+
+	}
+
 }

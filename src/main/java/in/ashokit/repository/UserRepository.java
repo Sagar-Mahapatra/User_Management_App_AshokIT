@@ -14,4 +14,7 @@ public interface UserRepository extends JpaRepository<User, Serializable> {
 	@Query("FROM User WHERE email=:email and password=:psw")
 	public User getUserByEmailAndPsw(String email, String psw);
 
+	@Query("select count(phNo) from User where phNo=:phoneNo")
+	public Integer getPhNoCount(String phoneNo);
+
 }

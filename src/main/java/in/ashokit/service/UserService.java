@@ -32,25 +32,5 @@ public interface UserService {
 
 	public List<User> getAllUsers();
 
-	/*
-	 * public String forgotPsw(String email);
-	 * 
-	 * public boolean registerUser(User user);
-	 * 
-	 * public boolean unlockAccount(String email, String tempPsw, String newPsw);
-	 * 
-	 * public String[] loginUser(String email, String psw);
-	 * 
-	 * public List<Country> getCountriesList();
-	 * 
-	 * public List<State> getStatesListByCountryId(Integer countryId);
-	 * 
-	 * public List<City> getCitiesByStateId(Integer stateId);
-	 * 
-	 * public List<User> getAllUsers();
-	 * 
-	 * public boolean deleteUser(Integer id);
-	 * 
-	 * public User getUserById(Integer id);
-	 */
+    public boolean isphNoUnique(String phNo);
 }

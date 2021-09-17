@@ -340,17 +340,35 @@ label, b {
 									$("#emailError").html(
 											"*Please Enter <b>email</b>");
 									$("#emailError").css("color", "red");
-									lastNameError = false;
+									emailError = false;
 								} else if (!exp.test(val)) {
 									$("#emailError").show();
 									$("#emailError")
 											.html(
 													"*Must contain <b>between 10 to 30 chars</b>");
 									$("#emailError").css("color", "red");
-									lastNameError = false;
+									emailError = false;
 								} else {
-									$("#emailError").hide();
-									emailError = true;
+
+									$.ajax({
+										url : 'emailUnique',
+										data : {
+											"email" : val
+										},
+										success : function(resTxt) {
+											if (resTxt != '') {
+												$("#emailError").show();
+												$("#emailError").html(resTxt);
+												$("#emailError").css('color',
+														'red');
+												emailError = false;
+											} else {
+												$("#emailError").hide();
+												emailError = true;
+											}
+										}
+									});
+
 								}
 								return emailError;
 							}
@@ -364,9 +382,31 @@ label, b {
 													"*Please Enter <b>phone number</b>");
 									$("#phNoError").css("color", "red");
 									phNoError = false;
+								} else if (val.length > 10 || val.length < 10) {
+									$("#phNoError").show();
+									$("#phNoError").html(
+											"*Ph No. must be <b>10 digits</b>");
+									$("#phNoError").css("color", "red");
+									phNoError = false;
 								} else {
-									$("#phNoError").hide();
-									phNoError = true;
+									$.ajax({
+										url : 'phNoUnique',
+										data : {
+											"phNo" : val
+										},
+										success : function(resTxt) {
+											if (resTxt != '') {
+												$("#phNoError").show();
+												$("#phNoError").html(resTxt);
+												$("#phNoError").css('color',
+														'red');
+												phNoError = false;
+											} else {
+												$("#phNoError").hide();
+												phNoError = true;
+											}
+										}
+									});
 								}
 								return phNoError;
 							}
