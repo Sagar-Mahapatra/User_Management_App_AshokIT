@@ -46,6 +46,7 @@ public class UserController {
 	}
 
 	@ResponseBody
+
 	@GetMapping("/getStatesByCountry/{countryId}")
 	public String getStatesByCountry(@PathVariable Integer countryId) {
 		Gson gson = new Gson();
@@ -53,6 +54,7 @@ public class UserController {
 	}
 
 	@ResponseBody
+
 	@GetMapping("/getCitiesByState/{stateId}")
 	public String getCitiesByState(@PathVariable Integer stateId) {
 		Gson gson = new Gson();
@@ -61,6 +63,7 @@ public class UserController {
 	}
 
 	@ResponseBody
+
 	@GetMapping("/getCountries")
 	public String getCountries() {
 		Gson gson = new Gson();
@@ -68,6 +71,7 @@ public class UserController {
 	}
 
 	@ResponseBody
+
 	@GetMapping("/getUserById/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
 		try {
@@ -76,6 +80,24 @@ public class UserController {
 			e.printStackTrace();
 			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
 		}
+
+	}
+
+	@GetMapping("/emailUnique")
+
+	@ResponseBody
+	public String emailUniqueCheck(@RequestParam String email) {
+
+		return (service.emailUnique(email)) ? "" : "Email-Id already exists";
+
+	}
+
+	@GetMapping("/phNoUnique")
+
+	@ResponseBody
+	public String phNoUniqueCheck(@RequestParam String phNo) {
+		boolean isphNoUnique = service.isphNoUnique(phNo);
+		return (isphNoUnique) ? "" : "Phone Number already exist";
 
 	}
 
@@ -165,22 +187,6 @@ public class UserController {
 			attr.addAttribute("deleteMsg", "Something Went Wrong !!!");
 		}
 		return "redirect:viewUsers";
-	}
-
-	@GetMapping("/emailUnique")
-	@ResponseBody
-	public String emailUniqueCheck(@RequestParam String email) {
-
-		return (service.emailUnique(email)) ? "" : "Email-Id already exists";
-
-	}
-
-	@GetMapping("/phNoUnique")
-	@ResponseBody
-	public String phNoUniqueCheck(@RequestParam String phNo) {
-		boolean isphNoUnique = service.isphNoUnique(phNo);
-		return (isphNoUnique) ? "" : "Phone Number already exist";
-
 	}
 
 }
