@@ -33,10 +33,11 @@ table tr th, td {
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">userId</th>
+					<th scope="col">Id</th>
 					<th scope="col">firstName</th>
 					<th scope="col">lastName</th>
 					<th scope="col">email</th>
+					<th scope="col">password</th>
 					<th scope="col">phNo</th>
 					<th scope="col">dob</th>
 					<th scope="col">gender</th>
@@ -56,6 +57,7 @@ table tr th, td {
 						<td>${user.firstName}</td>
 						<td>${user.lastName}</td>
 						<td>${user.email}</td>
+						<td>${user.password}</td>
 						<td>${user.phNo}</td>
 						<td>${user.dob}</td>
 						<td>${user.gender}</td>
