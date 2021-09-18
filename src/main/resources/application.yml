@@ -19,17 +19,24 @@ spring:
     view:
       prefix: /views/
       suffix: .jsp
+
+
   mail:
-    host: gmail.smtp.com
-    port: 587
-    username: sagarkmohapatra2012@gmail.com
+    host: smtp.gmail.com
     password: Sagar${1202}
+    port: 587
     properties:
       mail:
         smtp:
+          auth: true
+          connectiontimeout: 5000
           starttls:
             enable: true
-          auth: true 
+            required: true
+          timeout: 5000
+          writetimeout: 5000
+    username: sagarkmohapatra2012@gmail.com          
+
 app:
   messages:
      invalidCredentials: Invalid Credentials

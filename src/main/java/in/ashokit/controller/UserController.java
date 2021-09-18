@@ -39,7 +39,7 @@ public class UserController {
 		Map<Integer, String> countries = service.getCountries();
 		System.out.println(countries);
 
-		model.addAttribute("user", userForm);
+		model.addAttribute("userForm", userForm);
 		model.addAttribute("countries", countries);
 
 		return "userReg";
@@ -104,11 +104,11 @@ public class UserController {
 	@PostMapping("/register")
 	public String UserRegistration(@ModelAttribute UserForm userForm, Model model) {
 		boolean registerUser = service.saveUser(userForm);
-		System.out.println(userForm);
+
 		if (registerUser) {
 
 			model.addAttribute("msg", "Successfully registered, Please check your registered email to unlock account");
-			model.addAttribute("user", new UserForm());
+			model.addAttribute("userForm", new UserForm());
 		} else {
 			model.addAttribute("msg", "something went wrong please try again !!!");
 		}
@@ -117,8 +117,8 @@ public class UserController {
 	}
 
 	@GetMapping("/loadUnlockAccountForm")
-	public String loadUnlockAccountForm() {
-
+	public String loadUnlockAccountForm(@RequestParam String email, Model model) {
+		model.addAttribute("email", email);
 		return "unlockAccount";
 	}
 

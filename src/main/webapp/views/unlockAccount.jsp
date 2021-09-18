@@ -36,7 +36,7 @@ label, h3, b {
 						</div>
 						<div class="col-4">
 							<input type="email" name="email" id="email" class="form-control"
-								placeholder="Enter email" />
+								value="${email}" />
 						</div>
 						<div class="col-6">
 							<span id="emailError"></span>

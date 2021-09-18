@@ -1,9 +1,13 @@
 package in.ashokit.service;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +26,7 @@ import in.ashokit.repository.CityRepository;
 import in.ashokit.repository.CountryRepository;
 import in.ashokit.repository.StateRepository;
 import in.ashokit.repository.UserRepository;
+import in.ashokit.utils.EmailUtils;
 import in.ashokit.utils.PasswordGenerator;
 
 @Service
@@ -37,6 +42,8 @@ public class UserServiceImpl implements UserService {
 	private CityRepository cityRepo;
 	@Autowired
 	private AppProperties appProps;
+	@Autowired
+	private EmailUtils emailUtils;
 
 	public boolean isTempPwdValid(String email, String tempPwd) {
 
@@ -50,6 +57,33 @@ public class UserServiceImpl implements UserService {
 
 		return PasswordGenerator.generatePassword(6);
 
+	}
+
+	private String generateMailBodyToUnlockAccount(User user) throws Exception {
+
+		FileReader reader = new FileReader("unlockAccount.txt");
+		BufferedReader bufferedReader = new BufferedReader(reader);
+
+		Stream<String> lines = bufferedReader.lines();
+		List<String> list = lines
+				.map(line -> line.replace("{FNAME}", user.getFirstName()).replace("{LNAME}", user.getLastName())
+						.replace("{TEMP-PWD}", user.getPassword()).replace("{EMAIL}", user.getEmail()))
+				.collect(Collectors.toList());
+		bufferedReader.close();
+		return String.join("", list);
+	}
+
+	private String forgetPasswordMailBody(User user) throws Exception {
+
+		FileReader reader = new FileReader("ForgetPswMailTemplate.txt");
+		BufferedReader bufferedReader = new BufferedReader(reader);
+
+		Stream<String> lines = bufferedReader.lines();
+		List<String> list = lines.map(line -> line.replace("{FNAME}", user.getFirstName())
+				.replace("{LNAME}", user.getLastName()).replace("{PWD}", user.getPassword()))
+				.collect(Collectors.toList());
+		bufferedReader.close();
+		return String.join("", list);
 	}
 
 	@Override
@@ -71,22 +105,16 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public Map<Integer, String> getCountries() {
 		List<Country> list = countryRepo.findAll();
-		Map<Integer, String> map = new HashMap<>();
-		list.forEach(l -> {
-			map.put(l.getCountryId(), l.getCountryName());
-		});
 
-		return map;
+		return list.stream().collect(Collectors.toMap(Country::getCountryId, Country::getCountryName));
+
 	}
 
 	@Override
 	public Map<Integer, String> getStates(Integer countryId) {
 		List<State> list = stateRepo.getStatesByCountryId(countryId);
-		Map<Integer, String> map = new HashMap<>();
-		list.forEach(l -> {
-			map.put(l.getStateId(), l.getStateName());
-		});
-		return map;
+
+		return list.stream().collect(Collectors.toMap(State::getStateId, State::getStateName));
 	}
 
 	@Override
@@ -109,12 +137,25 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean saveUser(UserForm userForm) {
+
 		User user = new User();
 		user.setAccountStatus(AppContstants.ACC_LOCKED);
 		user.setPassword(generateTempPsw());
 		BeanUtils.copyProperties(userForm, user);
 		User savedUser = userRepo.save(user);
-		return savedUser != null && savedUser.getUserId() != null;
+
+		String subject = "Unlock Account Mail";
+
+		String mailBody = "";
+		try {
+			mailBody = generateMailBodyToUnlockAccount(savedUser);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		boolean sendEmail = emailUtils.sendEmail(savedUser.getEmail(), subject, mailBody);
+
+		return savedUser != null && savedUser.getUserId() != null && sendEmail;
 	}
 
 	@Override
@@ -139,7 +180,17 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			return messages.get(AppContstants.FORGET_PSW_FAIL);
 		}
-		// logic to send email to user email-id
+		String subject = "Forget Password Mail";
+
+		String mailBody = "";
+		try {
+			mailBody = forgetPasswordMailBody(user);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		emailUtils.sendEmail(emailId, subject, mailBody);
+
 		return messages.get(AppContstants.FORGET_PSW_SUCCESS);
 	}
 

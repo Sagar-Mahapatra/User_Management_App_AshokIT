@@ -31,7 +31,7 @@ label, b {
 			</div>
 			<!-- card header end -->
 			<div class="card-body">
-				<form:form action="register" method="POST" modelAttribute="user"
+				<form:form action="register" method="POST" modelAttribute="userForm"
 					id="regForm">
 					<!-- row#1 -->
 					<div class="row">
