@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import in.ashokit.bindings.LoginForm;
 import in.ashokit.bindings.UnlockAccForm;
 import in.ashokit.bindings.UserForm;
+import in.ashokit.constants.AppContstants;
 import in.ashokit.entity.City;
 import in.ashokit.entity.Country;
 import in.ashokit.entity.State;
@@ -58,11 +59,11 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.getUserByEmailAndPsw(loginForm.getEmail(), loginForm.getPassword());
 
 		if (user == null) {
-			return messages.get("invalidCredentials");
-		} else if (user.getAccountStatus().equals("Locked")) {
-			return messages.get("accountLocked");
+			return messages.get(AppContstants.INVALID_CREDENTIALS);
+		} else if (user.getAccountStatus().equals(AppContstants.ACC_LOCKED)) {
+			return messages.get(AppContstants.ACC_LOCKED_MESSAGE);
 		} else {
-			return messages.get("loginSuccess");
+			return messages.get(AppContstants.LOGIN_SUCCESS);
 		}
 
 	}
@@ -109,7 +110,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean saveUser(UserForm userForm) {
 		User user = new User();
-		user.setAccountStatus("Locked");
+		user.setAccountStatus(AppContstants.ACC_LOCKED);
 		user.setPassword(generateTempPsw());
 		BeanUtils.copyProperties(userForm, user);
 		User savedUser = userRepo.save(user);
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService {
 		User user = userRepo.getUserByEmailAndPsw(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
 		if (user != null) {
 			user.setPassword(unlockAccForm.getNewPsw());
-			user.setAccountStatus("Unlocked");
+			user.setAccountStatus(AppContstants.ACC_UNLOCKED);
 			userRepo.save(user);
 			return true;
 		}
@@ -136,10 +137,10 @@ public class UserServiceImpl implements UserService {
 		Map<String, String> messages = appProps.getMessages();
 		User user = userRepo.getUserByEmail(emailId);
 		if (user == null) {
-			return messages.get("forgotPwdFail");
+			return messages.get(AppContstants.FORGET_PSW_FAIL);
 		}
 		// logic to send email to user email-id
-		return messages.get("forgotPwdSuccess");
+		return messages.get(AppContstants.FORGET_PSW_SUCCESS);
 	}
 
 	@Override
