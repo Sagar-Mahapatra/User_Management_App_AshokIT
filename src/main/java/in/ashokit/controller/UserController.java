@@ -84,7 +84,6 @@ public class UserController {
 	}
 
 	@GetMapping("/emailUnique")
-
 	@ResponseBody
 	public String emailUniqueCheck(@RequestParam String email) {
 
@@ -103,21 +102,25 @@ public class UserController {
 
 	@PostMapping("/register")
 	public String UserRegistration(@ModelAttribute UserForm userForm, Model model) {
-		boolean registerUser = service.saveUser(userForm);
+		try {
+			boolean registerUser = service.saveUser(userForm);
+			if (registerUser) {
 
-		if (registerUser) {
-
-			model.addAttribute("msg", "Successfully registered, Please check your registered email to unlock account");
-			model.addAttribute("userForm", new UserForm());
-		} else {
-			model.addAttribute("msg", "something went wrong please try again !!!");
+				model.addAttribute("msg",
+						"Successfully registered, Please check your registered email to unlock account");
+				model.addAttribute("userForm", new UserForm());
+			} else {
+				model.addAttribute("msg", "something went wrong please try again !!!");
+			}
+		} catch (Exception e) {
+			model.addAttribute("msg", e.getMessage());
 		}
 
 		return "userReg";
 	}
 
 	@GetMapping("/loadUnlockAccountForm")
-	public String loadUnlockAccountForm(@RequestParam String email, Model model) {
+	public String loadUnlockAccountForm(@RequestParam(required = false) String email, Model model) {
 		model.addAttribute("email", email);
 		return "unlockAccount";
 	}
@@ -131,7 +134,7 @@ public class UserController {
 
 		} else {
 			model.addAttribute("msg",
-					"Please Enter the Registered email id & Password provided in the registered mail id");
+					"Please Enter the Registered email id & correct Temporary Password provided in the registered mail id");
 		}
 
 		return "unlockAccount";
@@ -144,11 +147,11 @@ public class UserController {
 	}
 
 	@GetMapping("/viewUsers")
-	public String viewUsers(Model model, RedirectAttributes attr) {
+	public String viewUsers(Model model, @RequestParam(required = false) String msg) {
 
 		model.addAttribute("users", service.getAllUsers());
 		model.addAttribute("user", new User());
-		model.addAttribute("msg", attr.getAttribute("deleteMsg"));
+		model.addAttribute("msg", msg);
 		return "viewUsers";
 	}
 
@@ -182,9 +185,9 @@ public class UserController {
 	public String deleteUser(@RequestParam Integer userId, Model model, RedirectAttributes attr) {
 		boolean deleteUser = service.deleteUser(userId);
 		if (deleteUser) {
-			attr.addAttribute("deleteMsg", "User Deleted Successfully...");
+			attr.addAttribute("msg", "User Deleted Successfully...");
 		} else {
-			attr.addAttribute("deleteMsg", "Something Went Wrong !!!");
+			attr.addAttribute("msg", "Something Went Wrong !!!");
 		}
 		return "redirect:viewUsers";
 	}

@@ -9,4 +9,5 @@ public class AppContstants {
 	public static final String LOGIN_SUCCESS = "loginSuccess";
 	public static final String FORGET_PSW_FAIL = "forgotPwdFail";
 	public static final String FORGET_PSW_SUCCESS = "forgotPwdSuccess";
+	public static final String USER_NOT_FOUND = "userNotFound";
 }

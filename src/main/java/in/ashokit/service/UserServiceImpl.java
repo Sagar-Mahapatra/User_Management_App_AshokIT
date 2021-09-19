@@ -2,6 +2,7 @@ package in.ashokit.service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,8 @@ import in.ashokit.entity.City;
 import in.ashokit.entity.Country;
 import in.ashokit.entity.State;
 import in.ashokit.entity.User;
+import in.ashokit.exception.EmailBodyGenerationFailException;
+import in.ashokit.exception.UserNotFoundException;
 import in.ashokit.props.AppProperties;
 import in.ashokit.repository.CityRepository;
 import in.ashokit.repository.CountryRepository;
@@ -45,11 +48,11 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private EmailUtils emailUtils;
 
-	public boolean isTempPwdValid(String email, String tempPwd) {
+	private boolean isTempPwdValid(String email, String tempPwd) {
 
-		User user = userRepo.getUserByEmail(email);
-
-		return (user != null && user.getPassword().equals(tempPwd)) ? true : false;
+		return userRepo.findAll().stream()
+				.filter(user -> user.getEmail().equals(email) && user.getPassword().equals(tempPwd)).findAny()
+				.isPresent();
 
 	}
 
@@ -60,17 +63,18 @@ public class UserServiceImpl implements UserService {
 	}
 
 	private String generateMailBodyToUnlockAccount(User user) throws Exception {
-
+		String body = "";
 		FileReader reader = new FileReader("unlockAccount.txt");
 		BufferedReader bufferedReader = new BufferedReader(reader);
 
 		Stream<String> lines = bufferedReader.lines();
-		List<String> list = lines
+		body = lines
 				.map(line -> line.replace("{FNAME}", user.getFirstName()).replace("{LNAME}", user.getLastName())
 						.replace("{TEMP-PWD}", user.getPassword()).replace("{EMAIL}", user.getEmail()))
-				.collect(Collectors.toList());
+				.map(Object::toString).collect(Collectors.joining(body));
+
 		bufferedReader.close();
-		return String.join("", list);
+		return body;
 	}
 
 	private String forgetPasswordMailBody(User user) throws Exception {
@@ -131,7 +135,7 @@ public class UserServiceImpl implements UserService {
 	public boolean emailUnique(String email) {
 		User user = userRepo.getUserByEmail(email);
 
-		return (user == null) ? true : false;
+		return user == null;
 
 	}
 
@@ -142,27 +146,26 @@ public class UserServiceImpl implements UserService {
 		user.setAccountStatus(AppContstants.ACC_LOCKED);
 		user.setPassword(generateTempPsw());
 		BeanUtils.copyProperties(userForm, user);
-		User savedUser = userRepo.save(user);
-
 		String subject = "Unlock Account Mail";
-
 		String mailBody = "";
+		boolean sendEmail = true;
 		try {
-			mailBody = generateMailBodyToUnlockAccount(savedUser);
+			mailBody = generateMailBodyToUnlockAccount(user);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new EmailBodyGenerationFailException(
+					"Problem Occured While Generating Email Body, Please try again later!!!");
 		}
-
-		boolean sendEmail = emailUtils.sendEmail(savedUser.getEmail(), subject, mailBody);
-
-		return savedUser != null && savedUser.getUserId() != null && sendEmail;
+		User savedUser = userRepo.save(user);
+		sendEmail = emailUtils.sendEmail(savedUser.getEmail(), subject, mailBody);
+		return savedUser != null && sendEmail;
 	}
 
 	@Override
 	public boolean unlockAccount(UnlockAccForm unlockAccForm) {
 
-		User user = userRepo.getUserByEmailAndPsw(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
-		if (user != null) {
+		boolean isValid = isTempPwdValid(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
+		if (isValid) {
+			User user = userRepo.getUserByEmailAndPsw(unlockAccForm.getEmail(), unlockAccForm.getTempPsw());
 			user.setPassword(unlockAccForm.getNewPsw());
 			user.setAccountStatus(AppContstants.ACC_UNLOCKED);
 			userRepo.save(user);
@@ -186,7 +189,8 @@ public class UserServiceImpl implements UserService {
 		try {
 			mailBody = forgetPasswordMailBody(user);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new EmailBodyGenerationFailException(
+					"Problem Occured While Generating Email Body, Please try again later!!!");
 		}
 
 		emailUtils.sendEmail(emailId, subject, mailBody);
@@ -196,16 +200,17 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User getUserById(Integer userId) {
-		Optional<User> user = userRepo.findById(userId);
+		Map<String, String> messages = appProps.getMessages();
 
-		return (user.isPresent()) ? user.get() : null;
+		return userRepo.findById(userId)
+				.orElseThrow(() -> new UserNotFoundException(messages.get(AppContstants.USER_NOT_FOUND)));
 
 	}
 
 	@Override
 	public boolean deleteUser(Integer userId) {
-		User user = getUserById(userId);
-		if (user != null) {
+		Optional<User> user = userRepo.findById(userId);
+		if (user.isPresent()) {
 			userRepo.deleteById(userId);
 			return true;
 		} else {
@@ -217,13 +222,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getAllUsers() {
 
-		return userRepo.findAll();
+		return userRepo.findAll().stream().sorted(Comparator.comparing(User::getFirstName))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public boolean isphNoUnique(String phNo) {
 		Integer phNoCount = userRepo.getPhNoCount(phNo);
-		return (phNoCount == 0) ? true : false;
+		return phNoCount == 0;
 
 	}
 
