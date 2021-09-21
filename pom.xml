@@ -89,10 +89,21 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.6.1</version>
+		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>User-Management-App(18-09-2021)</finalName>
+		<finalName>User-Management-App(21-09-2021)</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

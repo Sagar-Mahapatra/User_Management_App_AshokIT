@@ -28,16 +28,15 @@ label {
 				<h3>USER LOGIN PAGE</h3>
 			</div>
 			<div class="card-body">
-				<form:form id="myLoginForm" modelAttribute="loginForm"
-					action="userLogin" method="POST">
+				<form:form id="myLoginForm" action="login" method="POST" modelAttribute="loginForm">
 					<!-- row#1 -->
 					<div class="row">
 						<div class="col-2">
 							<label for="email">email</label>
 						</div>
 						<div class="col-4">
-							<input type="email" name="email" id="email" class="form-control"
-								placeholder="Enter email" />
+							<form:input type="email" path="email" name="email" id="email"
+								class="form-control" placeholder="Enter email" />
 						</div>
 						<div class="col-6">
 							<span id="emailError"></span>
@@ -50,8 +49,8 @@ label {
 							<label>Password</label>
 						</div>
 						<div class="col-4">
-							<input type="password" name="password" id="password"
-								class="form-control" placeholder="Enter Password" />
+							<form:input type="password" path="password" name="password"
+								id="password" class="form-control" placeholder="Enter Password" />
 						</div>
 						<div class="col-6">
 							<span id="passwordError"></span>

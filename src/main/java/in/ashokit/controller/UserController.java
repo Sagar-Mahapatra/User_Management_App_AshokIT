@@ -8,24 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.google.gson.Gson;
-
 import in.ashokit.bindings.LoginForm;
-import in.ashokit.bindings.UnlockAccForm;
 import in.ashokit.bindings.UserForm;
 import in.ashokit.entity.User;
 import in.ashokit.service.UserService;
 
 @Controller
-@RequestMapping("/user")
 public class UserController {
 
 	@Autowired
@@ -46,32 +39,6 @@ public class UserController {
 	}
 
 	@ResponseBody
-
-	@GetMapping("/getStatesByCountry/{countryId}")
-	public String getStatesByCountry(@PathVariable Integer countryId) {
-		Gson gson = new Gson();
-		return gson.toJson(service.getStates(countryId));
-	}
-
-	@ResponseBody
-
-	@GetMapping("/getCitiesByState/{stateId}")
-	public String getCitiesByState(@PathVariable Integer stateId) {
-		Gson gson = new Gson();
-		System.out.println(stateId);
-		return gson.toJson(service.getCities(stateId));
-	}
-
-	@ResponseBody
-
-	@GetMapping("/getCountries")
-	public String getCountries() {
-		Gson gson = new Gson();
-		return gson.toJson(service.getCountries());
-	}
-
-	@ResponseBody
-
 	@GetMapping("/getUserById/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
 		try {
@@ -83,16 +50,7 @@ public class UserController {
 
 	}
 
-	@GetMapping("/emailUnique")
-	@ResponseBody
-	public String emailUniqueCheck(@RequestParam String email) {
-
-		return (service.emailUnique(email)) ? "" : "Email-Id already exists";
-
-	}
-
 	@GetMapping("/phNoUnique")
-
 	@ResponseBody
 	public String phNoUniqueCheck(@RequestParam String phNo) {
 		boolean isphNoUnique = service.isphNoUnique(phNo);
@@ -100,43 +58,9 @@ public class UserController {
 
 	}
 
-	@PostMapping("/register")
-	public String UserRegistration(@ModelAttribute UserForm userForm, Model model) {
-		try {
-			boolean registerUser = service.saveUser(userForm);
-			if (registerUser) {
-
-				model.addAttribute("msg",
-						"Successfully registered, Please check your registered email to unlock account");
-				model.addAttribute("userForm", new UserForm());
-			} else {
-				model.addAttribute("msg", "something went wrong please try again !!!");
-			}
-		} catch (Exception e) {
-			model.addAttribute("msg", e.getMessage());
-		}
-
-		return "userReg";
-	}
-
 	@GetMapping("/loadUnlockAccountForm")
 	public String loadUnlockAccountForm(@RequestParam(required = false) String email, Model model) {
 		model.addAttribute("email", email);
-		return "unlockAccount";
-	}
-
-	@PostMapping("/unlockAccount")
-	public String unlockAccount(@ModelAttribute UnlockAccForm unlockAccForm, Model model) {
-
-		boolean unlockAccount = service.unlockAccount(unlockAccForm);
-		if (unlockAccount) {
-			model.addAttribute("msg", "Account Unlocked, please proceed with login");
-
-		} else {
-			model.addAttribute("msg",
-					"Please Enter the Registered email id & correct Temporary Password provided in the registered mail id");
-		}
-
 		return "unlockAccount";
 	}
 
@@ -155,30 +79,10 @@ public class UserController {
 		return "viewUsers";
 	}
 
-	@PostMapping("/userLogin")
-	public String userLogin(@ModelAttribute LoginForm loginForm, Model model) {
-		String msg = service.loginCheck(loginForm);
-		System.out.println(msg);
-
-		model.addAttribute("msg", msg);
-		return "userLogin";
-
-	}
-
 	@GetMapping("/loadForgotPasswordForm")
 	public String loadForgotPasswordForm() {
 
 		return "forgotPsw";
-	}
-
-	@PostMapping("/forgotPassword")
-	public String forgotPassword(@RequestParam String email, Model model) {
-		String msg = service.forgotPwd(email);
-
-		model.addAttribute("msg", msg);
-
-		return "forgotPsw";
-
 	}
 
 	@GetMapping("/deleteuser")
