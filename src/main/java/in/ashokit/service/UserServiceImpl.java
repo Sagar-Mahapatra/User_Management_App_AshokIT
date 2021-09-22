@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import in.ashokit.bindings.LoginForm;
@@ -35,18 +34,28 @@ import in.ashokit.utils.PasswordGenerator;
 @Service
 public class UserServiceImpl implements UserService {
 
-	@Autowired
 	private UserRepository userRepo;
-	@Autowired
+
 	private CountryRepository countryRepo;
-	@Autowired
+
 	private StateRepository stateRepo;
-	@Autowired
+
 	private CityRepository cityRepo;
-	@Autowired
+
 	private AppProperties appProps;
-	@Autowired
+
 	private EmailUtils emailUtils;
+
+	public UserServiceImpl(UserRepository userRepo, CountryRepository countryRepo, StateRepository stateRepo,
+			CityRepository cityRepo, AppProperties appProps, EmailUtils emailUtils) {
+
+		this.userRepo = userRepo;
+		this.countryRepo = countryRepo;
+		this.stateRepo = stateRepo;
+		this.cityRepo = cityRepo;
+		this.appProps = appProps;
+		this.emailUtils = emailUtils;
+	}
 
 	private boolean isTempPwdValid(String email, String tempPwd) {
 
@@ -64,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
 	private String generateMailBodyToUnlockAccount(User user) throws Exception {
 		String body = "";
-		FileReader reader = new FileReader("unlockAccount.txt");
+		FileReader reader = new FileReader(AppContstants.UNLOCK_ACC_TEMPLATE);
 		BufferedReader bufferedReader = new BufferedReader(reader);
 
 		Stream<String> lines = bufferedReader.lines();
@@ -79,7 +88,7 @@ public class UserServiceImpl implements UserService {
 
 	private String forgetPasswordMailBody(User user) throws Exception {
 
-		FileReader reader = new FileReader("ForgetPswMailTemplate.txt");
+		FileReader reader = new FileReader(AppContstants.FORGOT_PSW_TEMPLATE);
 		BufferedReader bufferedReader = new BufferedReader(reader);
 
 		Stream<String> lines = bufferedReader.lines();
@@ -146,14 +155,14 @@ public class UserServiceImpl implements UserService {
 		user.setAccountStatus(AppContstants.ACC_LOCKED);
 		user.setPassword(generateTempPsw());
 		BeanUtils.copyProperties(userForm, user);
-		String subject = "Unlock Account Mail";
+		String subject = AppContstants.UNLOCK_MAIL_SUBJECT;
 		String mailBody = "";
 		boolean sendEmail = true;
 		try {
 			mailBody = generateMailBodyToUnlockAccount(user);
 		} catch (Exception e) {
 			throw new EmailBodyGenerationFailException(
-					"Problem Occured While Generating Email Body, Please try again later!!!");
+					appProps.getMessages().get(AppContstants.EMAIL_BODY_EXCEPTION_MSG));
 		}
 		User savedUser = userRepo.save(user);
 		sendEmail = emailUtils.sendEmail(savedUser.getEmail(), subject, mailBody);
@@ -183,14 +192,14 @@ public class UserServiceImpl implements UserService {
 		if (user == null) {
 			return messages.get(AppContstants.FORGET_PSW_FAIL);
 		}
-		String subject = "Forget Password Mail";
+		String subject = AppContstants.FORGOT_PSW_MAIL_SUBJECT;
 
 		String mailBody = "";
 		try {
 			mailBody = forgetPasswordMailBody(user);
 		} catch (Exception e) {
 			throw new EmailBodyGenerationFailException(
-					"Problem Occured While Generating Email Body, Please try again later!!!");
+					appProps.getMessages().get(AppContstants.EMAIL_BODY_EXCEPTION_MSG));
 		}
 
 		emailUtils.sendEmail(emailId, subject, mailBody);

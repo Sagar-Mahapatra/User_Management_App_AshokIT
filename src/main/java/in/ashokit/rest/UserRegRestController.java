@@ -11,19 +11,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import in.ashokit.bindings.UserForm;
+import in.ashokit.constants.AppContstants;
+import in.ashokit.props.AppProperties;
 import in.ashokit.service.UserService;
 
 @RestController
 public class UserRegRestController {
 	@Autowired
 	private UserService service;
+	@Autowired
+	private AppProperties props;
 
-	@GetMapping("/getStatesByCountry/{countryId}")
+	@GetMapping("/states/{countryId}")
 	public Map<Integer, String> getStatesByCountry(@PathVariable Integer countryId) {
 		return service.getStates(countryId);
 	}
 
-	@GetMapping("/getCitiesByState/{stateId}")
+	@GetMapping("/cities/{stateId}")
 	public Map<Integer, String> getCitiesByState(@PathVariable Integer stateId) {
 		return service.getCities(stateId);
 	}
@@ -36,23 +40,23 @@ public class UserRegRestController {
 	@GetMapping("/emailUnique")
 	public String emailUniqueCheck(@RequestParam String email) {
 
-		return (service.emailUnique(email)) ? "" : "Email-Id already exists";
+		return (service.emailUnique(email)) ? AppContstants.UNIQUE : AppContstants.DUPLICATE;
 
 	}
 
 	@PostMapping("/register")
 	public String UserRegistration(@RequestBody UserForm userForm) {
-		String msg = "";
+
 		try {
 			boolean registerUser = service.saveUser(userForm);
 			if (registerUser) {
-				msg = "Successfully registered, Please check your registered email to unlock account";
+				return props.getMessages().get(AppContstants.REG_SUCCESS);
 			} else {
-				msg = "something went wrong please try again !!!";
+				return props.getMessages().get(AppContstants.REG_FAIL);
 			}
 		} catch (Exception e) {
-			msg = e.getMessage();
+			return e.getMessage();
 		}
-		return msg;
+
 	}
 }

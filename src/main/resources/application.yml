@@ -47,8 +47,9 @@ app:
      forgotPwdSuccess: we have sent password on your registered email-id
      forgotPwdFail: We can't find a user with that e-mail address
      userNotFound: We can't find a user with this id
-     
-     
+     unlockSuccess: Account Unlocked, please proceed with login
+     unlockFail: Please Enter the Registered email id & correct Temporary Password provided in the registered mail id
+     EmailBodyGenerationFailExceptionMsg: Problem Occured While Generating Email Body, Please try again later!!!
      
      
      
