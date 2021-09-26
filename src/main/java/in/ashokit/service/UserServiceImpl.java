@@ -157,7 +157,7 @@ public class UserServiceImpl implements UserService {
 		BeanUtils.copyProperties(userForm, user);
 		String subject = AppContstants.UNLOCK_MAIL_SUBJECT;
 		String mailBody = "";
-		boolean sendEmail = true;
+		boolean sendEmail = false;
 		try {
 			mailBody = generateMailBodyToUnlockAccount(user);
 		} catch (Exception e) {
