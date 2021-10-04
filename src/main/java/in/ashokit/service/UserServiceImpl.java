@@ -2,6 +2,7 @@ package in.ashokit.service;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -86,17 +87,21 @@ public class UserServiceImpl implements UserService {
 		return body;
 	}
 
-	private String forgetPasswordMailBody(User user) throws Exception {
+	private String forgetPasswordMailBody(User user) {
 
-		FileReader reader = new FileReader(AppContstants.FORGOT_PSW_TEMPLATE);
-		BufferedReader bufferedReader = new BufferedReader(reader);
+		try (BufferedReader bufferedReader = new BufferedReader(new FileReader(AppContstants.FORGOT_PSW_TEMPLATE))) {
 
-		Stream<String> lines = bufferedReader.lines();
-		List<String> list = lines.map(line -> line.replace("{FNAME}", user.getFirstName())
-				.replace("{LNAME}", user.getLastName()).replace("{PWD}", user.getPassword()))
-				.collect(Collectors.toList());
-		bufferedReader.close();
-		return String.join("", list);
+			Stream<String> lines = bufferedReader.lines();
+			List<String> list = lines.map(line -> line.replace("{FNAME}", user.getFirstName())
+					.replace("{LNAME}", user.getLastName()).replace("{PWD}", user.getPassword()))
+					.collect(Collectors.toList());
+			return String.join("", list);
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new EmailBodyGenerationFailException(
+					appProps.getMessages().get(AppContstants.EMAIL_BODY_EXCEPTION_MSG));
+		}
+
 	}
 
 	@Override
@@ -194,13 +199,7 @@ public class UserServiceImpl implements UserService {
 		}
 		String subject = AppContstants.FORGOT_PSW_MAIL_SUBJECT;
 
-		String mailBody = "";
-		try {
-			mailBody = forgetPasswordMailBody(user);
-		} catch (Exception e) {
-			throw new EmailBodyGenerationFailException(
-					appProps.getMessages().get(AppContstants.EMAIL_BODY_EXCEPTION_MSG));
-		}
+		String mailBody = forgetPasswordMailBody(user);
 
 		emailUtils.sendEmail(emailId, subject, mailBody);
 
