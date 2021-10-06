@@ -7,7 +7,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -217,14 +216,9 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean deleteUser(Integer userId) {
-		Optional<User> user = userRepo.findById(userId);
-		if (user.isPresent()) {
-			userRepo.deleteById(userId);
-			return true;
-		} else {
-			return false;
-		}
-
+		User user = getUserById(userId);
+		userRepo.delete(user);
+		return true;
 	}
 
 	@Override
