@@ -41,13 +41,7 @@ public class UserController {
 	@ResponseBody
 	@GetMapping("/getUserById/{userId}")
 	public ResponseEntity<User> getUserById(@PathVariable Integer userId) {
-		try {
-			return new ResponseEntity<User>(service.getUserById(userId), HttpStatus.OK);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
-		}
-
+		return new ResponseEntity<User>(service.getUserById(userId), HttpStatus.FOUND);
 	}
 
 	@GetMapping("/phNoUnique")
