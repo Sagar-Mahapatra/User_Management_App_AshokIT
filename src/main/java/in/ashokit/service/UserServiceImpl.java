@@ -210,8 +210,8 @@ public class UserServiceImpl implements UserService {
 	public User getUserById(Integer userId) {
 		Map<String, String> messages = appProps.getMessages();
 
-		return userRepo.findById(userId)
-				.orElseThrow(() -> new UserNotFoundException(messages.get(AppContstants.USER_NOT_FOUND)));
+		return userRepo.findById(userId).orElseThrow(
+				() -> new UserNotFoundException(messages.get(AppContstants.USER_NOT_FOUND) + " : " + userId));
 
 	}
 
